@@ -5,7 +5,7 @@ const GhostCore = require('Core')
 const CloudStorm = require('Cloudstorm')
 const amqp = require('amqplib')
 const log = new GhostCore.Logger()
-const args = new GhostCore.Utils.parseArgs()
+const args = new GhostCore.Utils.ParseArgs()
 
 const bot = new CloudStorm(process.env.TOKEN, {
   initialPresence: {

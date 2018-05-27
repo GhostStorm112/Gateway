@@ -32,7 +32,7 @@ Cloudstorm@DasWolke/CloudStorm#dev:
 
 "Core@https://gitlab.com/GhostStorm/Core.git":
   version "0.0.1"
-  resolved "https://gitlab.com/GhostStorm/Core.git#387b281dc2a00428931d2f16c15f8f44365a4a09"
+  resolved "https://gitlab.com/GhostStorm/Core.git#fb26685dab1d3c6f06257d1449f07f339b2c3836"
   dependencies:
     winston "^3.0.0-rc5"
 

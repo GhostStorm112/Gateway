@@ -6,6 +6,9 @@
 	"repository": "",
 	"author": "_112",
 	"license": "MIT",
+	"scripts": {
+		"test": "eslint ."
+	},	
 	"dependencies": {
 		"Cloudstorm": "DasWolke/CloudStorm#dev",
 		"Core": "https://gitlab.com/GhostStorm/Core.git",
@@ -23,7 +26,7 @@
 		"dotenv": "^5.0.1"
 	},
 	"eslintConfig": {
-		"extends": "aqua",
+		"extends": "standard",
 		"rules": {
 			"no-console": 0
 		}
