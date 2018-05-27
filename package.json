@@ -1,0 +1,31 @@
+{
+	"name": "ghost-gateway",
+	"version": "0.0.1",
+	"description": "GhostStorm Gateway",
+	"main": "index.js",
+	"repository": "",
+	"author": "_112",
+	"license": "MIT",
+	"dependencies": {
+		"Cloudstorm": "DasWolke/CloudStorm#dev",
+		"Core": "https://gitlab.com/GhostStorm/Core.git",
+		"bluebird": "3.5.1",
+		"amqplib": "^0.5.2"
+		
+	},
+	"devDependencies": {
+		"eslint": "^4.19.1",
+		"eslint-config-standard": "^11.0.0-beta.0",
+		"eslint-plugin-import": "^2.8.0",
+		"eslint-plugin-node": "^6.0.0",
+		"eslint-plugin-promise": "^3.6.0",
+		"eslint-plugin-standard": "^3.0.1",
+		"dotenv": "^5.0.1"
+	},
+	"eslintConfig": {
+		"extends": "aqua",
+		"rules": {
+			"no-console": 0
+		}
+	}
+}
