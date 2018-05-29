@@ -13,8 +13,7 @@
 		"Cloudstorm": "DasWolke/CloudStorm#dev",
 		"Core": "https://gitlab.com/GhostStorm/Core.git",
 		"bluebird": "3.5.1",
-		"amqplib": "^0.5.2"
-		
+		"amqplib": "^0.5.2",		
 	},
 	"devDependencies": {
 		"eslint": "^4.19.1",

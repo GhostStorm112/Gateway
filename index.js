@@ -31,7 +31,10 @@ async function run () {
   // Send events to cache worker
   channel.assertQueue('weather-pre-cache', { durable: false, autoDelete: true })
   bot.on('event', event => channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify(event))))
-  bot.on('event', event => log.info('GatewayEvent', event.t))
+  // bot.on('event', event => log.info('GatewayEvent', event.t))
+  bot.on('event', event => console.log(event.t))
+  bot.on('event', event => console.log(event.d))
+
   // Receive requests from bot
   channel.assertQueue('weather-gateway-requests', { durable: false, autoDelete: true })
   channel.consume('weather-gateway-requests', event => {
