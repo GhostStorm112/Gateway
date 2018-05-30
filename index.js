@@ -13,7 +13,7 @@ const args = GhostCore.Utils.ParseArgs()
 const bot = new CloudStorm(process.env.TOKEN, {
   initialPresence: {
     status: 'online',
-    game: { name: 'the weather', type: 3 } // Watching the weather
+    game: { name: 'the weather' || process.env.GAME, type: 3 } // Watching the weather
   },
   firstShardId: args.firstShard || 0,
   lastShardId: args.lastShard || (args.numShards ? args.numShards - 1 : 0),
@@ -30,7 +30,7 @@ async function run () {
   const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost')
   const channel = await connection.createChannel()
   this.lavalink = await new Lavalink({
-    user: '326603853736837121',
+    user: process.env.USERID || '326603853736837121',
     password: process.env.LAVALINK_PASSWORD,
     rest: process.env.LAVALINK_REST,
     ws: process.env.LAVALINK_WS,
@@ -54,18 +54,13 @@ async function run () {
 
   bot.on('event', event => {
     channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify(event)))
-    // console.log(event.t)
-    // console.log(event.d)
     if (event.t === 'VOICE_SERVER_UPDATE') {
       console.log('VOICE_SERVER_UPDATE')
-      console.log(event.d)
-
       this.lavalink.voiceServerUpdate(event.d)
     }
     if (event.t === 'VOICE_STATE_UPDATE') {
       console.log('VOICE_STATE_UPDATE')
-      console.log(event.d)
-
+      gvsu(event)
       this.lavalink.voiceStateUpdate(event.d)
     }
   })
@@ -108,23 +103,16 @@ async function processRequest (event) {
       bot.statusUpdate(Object.assign({ status: 'online' }, event.d))
       break
     case 'VOICE_STATE_UPDATE':
-      console.log('VOICESTATE PROCESS')
-      console.log(event.d)
       bot.voiceStateUpdate(0, event.d)
-      this.lavalink.voiceStateUpdate(event)
-      gvsu(event)
       break
     case 'LPLAY':
-      console.log(event.d.guild_id)
       queue = await this.lavalink.queues.get(event.d.guild_id)
       songs = await this.lavalink.load(`ytsearch:${event.d.song}`)
       await queue.add(songs[0].track)
       if (!queue.player.playing && !queue.player.paused) await queue.start()
       break
-
     case 'LSTOP':
       this.lavalink.stop(event.d.guild_id)
-
       break
     case 'LPAUSE':
       queue = this.lavalink.queues.get(event.d.guild_id)
