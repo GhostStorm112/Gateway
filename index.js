@@ -22,9 +22,10 @@ const bot = new CloudStorm(process.env.TOKEN, {
 
 async function run () {
   this.redis = new Cache({
-    host: process.env.REDIS_URL || 'redis_db',
+    host: 'redis://redis_db:6379',
     db: 2
   })
+  log.info('CUNT', 'I AM FUCKING STARTING')
   log.info('Gateway', 'Starting gateway')
   const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost')
   const channel = await connection.createChannel()
