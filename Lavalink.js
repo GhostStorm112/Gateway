@@ -8,7 +8,7 @@ class Lavalink extends Lavaqueue {
       hosts: {
         rest: options.rest,
         ws: options.ws,
-        redis: options.redis
+        redis: process.env.REDIS_URL
       }
     })
 

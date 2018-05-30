@@ -20,7 +20,7 @@ const bot = new CloudStorm(process.env.TOKEN, {
 
 async function run () {
   console.log(process.env.REDIS_URL)
-  this.redis = new Cache({
+  const redis = new Cache({
     port: 6379,
     host: process.env.REDIS_URL,
     db: 2
@@ -35,7 +35,7 @@ async function run () {
     password: process.env.LAVALINK_PASSWORD,
     rest: process.env.LAVALINK_REST,
     ws: process.env.LAVALINK_WS,
-    redis: await this.redis,
+    redis: redis,
     gateway: await channel
   })
 
