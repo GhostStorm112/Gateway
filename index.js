@@ -13,7 +13,7 @@ const args = GhostCore.Utils.ParseArgs()
 const bot = new CloudStorm(process.env.TOKEN, {
   initialPresence: {
     status: 'online',
-    game: { name: 'the weather' || process.env.GAME, type: 3 } // Watching the weather
+    game: { name: process.env.GAME, type: 3 } // Watching the weather
   },
   firstShardId: args.firstShard || 0,
   lastShardId: args.lastShard || (args.numShards ? args.numShards - 1 : 0),
@@ -23,7 +23,7 @@ const bot = new CloudStorm(process.env.TOKEN, {
 async function run () {
   this.redis = new Cache({
     port: 6379,
-    host: process.env.REDIS_URL || 'localhost',
+    host: process.env.REDIS_URL,
     db: 2
   })
   log.info('Gateway', 'Starting gateway')
