@@ -22,7 +22,7 @@ const bot = new CloudStorm(process.env.TOKEN, {
 
 async function run () {
   this.redis = new Cache({
-    host: 'redis://redis_db:6379',
+    host: process.env.REDIS_URL,
     db: 2
   })
   log.info('CUNT', 'I AM FUCKING STARTING')
