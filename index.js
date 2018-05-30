@@ -3,10 +3,13 @@ require('dotenv').config()
 
 const GhostCore = require('Core')
 const CloudStorm = require('Cloudstorm')
+const Redis = require('ioredis')
 const { default: Cache } = require('@spectacles/cache')
 const amqp = require('amqplib')
 const Lavalink = require('./Lavalink')
 const log = new GhostCore.Logger()
+
+const redis = Redis(process.env.REDIS_URL)
 
 const args = GhostCore.Utils.ParseArgs()
 
@@ -21,10 +24,8 @@ const bot = new CloudStorm(process.env.TOKEN, {
 })
 
 async function run () {
-  this.redis = new Cache({
-    host: process.env.REDIS_URL,
-    db: 2
-  })
+  console.log(process.env.REDIS_URL)
+  this.redis = new Cache(redis)
   log.info('CUNT', 'I AM FUCKING STARTING')
   log.info('Gateway', 'Starting gateway')
   const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost')

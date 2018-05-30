@@ -12,6 +12,7 @@
 	"dependencies": {
 		"Cloudstorm": "DasWolke/CloudStorm#dev",
 		"Core": "https://gitlab.com/GhostStorm/Core.git",
+		"ioredis": "^3.2.2",
 		"bluebird": "3.5.1",
 		"@spectacles/cache": "0.3.12",
 		"lavalink": "^0.7.2",
