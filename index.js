@@ -22,7 +22,7 @@ const bot = new CloudStorm(process.env.TOKEN, {
 
 async function run () {
   this.redis = new Cache({
-    host: process.env.REDIS_URL || 'redis',
+    host: process.env.REDIS_URL || 'redis_db',
     db: 2
   })
   log.info('Gateway', 'Starting gateway')
