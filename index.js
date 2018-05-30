@@ -9,7 +9,12 @@ const amqp = require('amqplib')
 const Lavalink = require('./Lavalink')
 const log = new GhostCore.Logger()
 
-const redis = Redis(process.env.REDIS_URL)
+const redis = Redis({
+  port: 6379,
+  host: process.env.REDIS_URL,
+  family: 4,
+  db: 2
+})
 
 const args = GhostCore.Utils.ParseArgs()
 
@@ -28,8 +33,10 @@ async function run () {
   this.redis = new Cache(redis)
   log.info('CUNT', 'I AM FUCKING STARTING')
   log.info('Gateway', 'Starting gateway')
+
   const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost')
   const channel = await connection.createChannel()
+
   this.lavalink = await new Lavalink({
     user: process.env.USERID || '326603853736837121',
     password: process.env.LAVALINK_PASSWORD,
@@ -38,6 +45,7 @@ async function run () {
     redis: await this.redis,
     gateway: await channel
   })
+
   this.voiceSessions = new Map()
 
   await bot.connect()
