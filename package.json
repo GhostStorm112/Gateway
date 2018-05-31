@@ -15,7 +15,7 @@
 		"ioredis": "^3.2.2",
 		"bluebird": "3.5.1",
 		"@spectacles/cache": "0.3.12",
-		"lavalink": "^0.7.2",
+		"lavalink": "^0.7.0",
 		"lavaqueue": "^0.4.1",
 		"amqplib": "^0.5.2"		
 	},

@@ -5,7 +5,6 @@ const GhostCore = require('Core')
 const CloudStorm = require('Cloudstorm')
 const { default: Cache } = require('@spectacles/cache')
 const amqp = require('amqplib')
-const Lavalink = require('./Lavalink')
 const log = new GhostCore.Logger()
 const args = GhostCore.Utils.ParseArgs()
 const bot = new CloudStorm(process.env.TOKEN, {
@@ -19,7 +18,6 @@ const bot = new CloudStorm(process.env.TOKEN, {
 })
 
 async function run () {
-
   // Setup redis cache
   this.redis = new Cache({
     port: 6379,
@@ -32,7 +30,7 @@ async function run () {
   const channel = await connection.createChannel()
 
   // Setup lavalink music client
-  this.lavalink = await new Lavalink({
+  this.lavalink = await new GhostCore.LavalinkGatway({
     user: process.env.USERID || '326603853736837121',
     password: process.env.LAVALINK_PASSWORD,
     rest: process.env.LAVALINK_REST,
@@ -58,10 +56,10 @@ async function run () {
   bot.on('event', event => {
     channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify(event)))
     if (event.t === 'VOICE_SERVER_UPDATE') {
-      gvsu(event)
       this.lavalink.voiceServerUpdate(event.d)
     }
     if (event.t === 'VOICE_STATE_UPDATE') {
+      gvsu(event)
       this.lavalink.voiceStateUpdate(event.d)
     }
   })
@@ -107,8 +105,7 @@ async function processRequest (event) {
       break
     case 'LPLAY':
       queue = await this.lavalink.queues.get(event.d.guild_id)
-      songs = await this.lavalink.load(`ytsearch:${event.d.song}`)
-      await queue.add(songs[0].track)
+      await queue.add(event.d.song)
       if (!queue.player.playing && !queue.player.paused) await queue.start()
       break
     case 'LSTOP':
@@ -127,7 +124,7 @@ async function processRequest (event) {
       break
     case 'LLEAVE':
       queue = this.lavalink.queues.get(event.d.guild_id)
-      await queue.player.join(null)
+      await queue.player.join(event.d.channel_id)
       break
     case 'LCQUEUE':
       break
