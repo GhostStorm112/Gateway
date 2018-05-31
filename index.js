@@ -19,7 +19,8 @@ const bot = new CloudStorm(process.env.TOKEN, {
 })
 
 async function run () {
-  console.log(process.env.REDIS_URL)
+
+  // Setup redis cache
   this.redis = new Cache({
     port: 6379,
     host: process.env.REDIS_URL,
@@ -30,6 +31,7 @@ async function run () {
   const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost')
   const channel = await connection.createChannel()
 
+  // Setup lavalink music client
   this.lavalink = await new Lavalink({
     user: process.env.USERID || '326603853736837121',
     password: process.env.LAVALINK_PASSWORD,
@@ -43,7 +45,6 @@ async function run () {
 
   await bot.connect()
 
-  bot.on('voiceStateUpdate', message => this.lavalink.voiceStateUpdate(message))
   bot.on('error', error => console.log(error))
   bot.on('ready', () => {
     log.info('Gateway', 'Connected to gateway')
@@ -57,17 +58,13 @@ async function run () {
   bot.on('event', event => {
     channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify(event)))
     if (event.t === 'VOICE_SERVER_UPDATE') {
-      console.log('VOICE_SERVER_UPDATE')
+      gvsu(event)
       this.lavalink.voiceServerUpdate(event.d)
     }
     if (event.t === 'VOICE_STATE_UPDATE') {
-      console.log('VOICE_STATE_UPDATE')
-      gvsu(event)
       this.lavalink.voiceStateUpdate(event.d)
     }
   })
-
-  // bot.on('event', event => log.info('GatewayEvent', event.t))
 
   // Receive requests from bot
   channel.assertQueue('weather-gateway-requests', { durable: false, autoDelete: true })
@@ -80,6 +77,7 @@ async function rshards () {
   log.info('rshards', 'Restarting all shards')
   bot.disconnect()
 }
+// Cache players
 async function gvsu (packet) {
   const queue = this.lavalink.queues.get(packet.d.guild_id)
   await queue.player.join(packet.d.channel_id)
@@ -126,6 +124,10 @@ async function processRequest (event) {
     case 'LRESUME':
       queue = this.lavalink.queues.get(event.d.guild_id)
       await queue.player.pause(false)
+      break
+    case 'LLEAVE':
+      queue = this.lavalink.queues.get(event.d.guild_id)
+      await queue.player.join(null)
       break
     case 'LCQUEUE':
       break
