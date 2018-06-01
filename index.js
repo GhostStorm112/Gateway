@@ -98,15 +98,13 @@ async function gvsu (packet) {
   }
 }
 async function processRequest (event) {
-  var queue
-  var songs
   switch (event.t) {
     case 'STATUS_UPDATE':
       bot.statusUpdate(Object.assign({ status: 'online' }, event.d))
       break
     case 'VOICE_STATE_UPDATE':
       gvsu(event)
-      bot.voiceStateUpdate(0, event.d)
+      bot.voiceStateUpdate(event.d.shard_id || 0, event.d)
       break
     case 'LCQUEUE':
       break
@@ -125,6 +123,8 @@ async function processMusicRequest (event) {
   switch (event.d.action) {
     case 'PLAY':
       await queue.add(event.d.song)
+      console.log(queue.player.playing)
+      console.log(queue.player.paused)
       if (!queue.player.playing && !queue.player.paused) await queue.start()
       break
     case 'STOP':
