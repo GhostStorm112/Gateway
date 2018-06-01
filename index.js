@@ -59,7 +59,6 @@ async function run () {
       this.lavalink.voiceServerUpdate(event.d)
     }
     if (event.t === 'VOICE_STATE_UPDATE') {
-      gvsu(event)
       this.lavalink.voiceStateUpdate(event.d)
     }
   })
@@ -67,7 +66,12 @@ async function run () {
   // Receive requests from bot
   channel.assertQueue('weather-gateway-requests', { durable: false, autoDelete: true })
   channel.consume('weather-gateway-requests', event => {
-    return processRequest(JSON.parse(event.content.toString()))
+    const devent = JSON.parse(event.content.toString())
+    if (devent.t === 'LAVALINK') {
+      return processMusicRequest(devent)
+    } else {
+      return processRequest(devent)
+    }
   })
 }
 
@@ -101,30 +105,8 @@ async function processRequest (event) {
       bot.statusUpdate(Object.assign({ status: 'online' }, event.d))
       break
     case 'VOICE_STATE_UPDATE':
+      gvsu(event)
       bot.voiceStateUpdate(0, event.d)
-      break
-    case 'LPLAY':
-      queue = await this.lavalink.queues.get(event.d.guild_id)
-      await queue.add(event.d.song)
-      if (!queue.player.playing && !queue.player.paused) await queue.start()
-      break
-    case 'LSTOP':
-      this.lavalink.stop(event.d.guild_id)
-      break
-    case 'LPAUSE':
-      queue = this.lavalink.queues.get(event.d.guild_id)
-      await queue.player.pause()
-      break
-    case 'LSKIP':
-      this.lavalink.skip(event.d.guild_id)
-      break
-    case 'LRESUME':
-      queue = this.lavalink.queues.get(event.d.guild_id)
-      await queue.player.pause(false)
-      break
-    case 'LLEAVE':
-      queue = this.lavalink.queues.get(event.d.guild_id)
-      await queue.player.join(event.d.channel_id)
       break
     case 'LCQUEUE':
       break
@@ -136,6 +118,31 @@ async function processRequest (event) {
   }
 
   return null
+}
+
+async function processMusicRequest (event) {
+  const queue = await this.lavalink.queues.get(event.d.guild_id)
+  switch (event.d.action) {
+    case 'PLAY':
+      await queue.add(event.d.song)
+      if (!queue.player.playing && !queue.player.paused) await queue.start()
+      break
+    case 'STOP':
+      queue.stop()
+      break
+    case 'PAUSE':
+      await queue.player.pause()
+      break
+    case 'SKIP':
+      queue.next()
+      break
+    case 'RESUME':
+      await queue.player.pause(false)
+      break
+    case 'LEAVE':
+      await queue.player.join(event.d.channel_id)
+      break
+  }
 }
 
 run().catch(error => console.log(error))
