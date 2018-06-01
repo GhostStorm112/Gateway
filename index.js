@@ -123,8 +123,6 @@ async function processMusicRequest (event) {
   switch (event.d.action) {
     case 'PLAY':
       await queue.add(event.d.song)
-      console.log(queue.player.playing)
-      console.log(queue.player.paused)
       if (!queue.player.playing && !queue.player.paused) await queue.start()
       break
     case 'STOP':
