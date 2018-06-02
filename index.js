@@ -44,11 +44,11 @@ async function run () {
   await bot.connect()
 
   bot.on('error', error => console.log(error))
-  bot.on('ready', () => {
-    log.info('Gateway', 'Connected to gateway')
+  bot.on('ready', () => log.info('Gateway', 'Connected to gateway'))
+  bot.on('shardReady', event => {
+    log.info('Gateway', 'Shard: ' + event.id + ' joined the hive')
     this.lavalink.recover()
   })
-  bot.on('shardReady', event => log.info('Gateway', 'Shard: ' + event.id + ' joined the hive'))
 
   // Send events to cache worker
   channel.assertQueue('weather-pre-cache', { durable: false, autoDelete: true })
@@ -104,6 +104,7 @@ async function processRequest (event) {
       break
     case 'VOICE_STATE_UPDATE':
       gvsu(event)
+      this.lavalink.voiceStateUpdate(event.d)
       bot.voiceStateUpdate(event.d.shard_id || 0, event.d)
       break
     case 'LCQUEUE':
@@ -119,7 +120,7 @@ async function processRequest (event) {
 }
 
 async function processMusicRequest (event) {
-  const queue = await this.lavalink.queues.get(event.d.guild_id)
+  let queue = await this.lavalink.queues.get(event.d.guild_id)
   switch (event.d.action) {
     case 'PLAY':
       await queue.add(event.d.song)
@@ -138,7 +139,13 @@ async function processMusicRequest (event) {
       await queue.player.pause(false)
       break
     case 'LEAVE':
-      await queue.player.join(event.d.channel_id)
+      await queue.stop()
+      bot.voiceStateUpdate(event.d.shard_id || 0, {
+        guild_id: event.d.guild_id,
+        channel_id: null,
+        self_mute: false,
+        self_deaf: false
+      })
       break
   }
 }
