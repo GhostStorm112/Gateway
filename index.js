@@ -12,6 +12,9 @@ const bot = new CloudStorm(process.env.TOKEN, {
   lastShardId: args.lastShard || (args.numShards ? args.numShards - 1 : 0),
   shardAmount: args.numShards || (args.firstShard && args.lastShard ? args.lastShard - args.firstShard + 1 : 1)
 })
+
+const DBL = require('dblapi.js')
+const dbl = new DBL(process.env.DB_TOKEN)
 async function run () {
   // Setup redis cache
   this.redis = new Cache({
