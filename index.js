@@ -40,11 +40,13 @@ async function run () {
   await bot.connect()
 
   bot.on('error', error => console.log(error))
-  bot.on('ready', () => log.info('Gateway', 'Connected to gateway'))
+  bot.on('ready', () => {
+    log.info('Gateway', 'Connected to gateway')
+    this.lavalink.recover()
+  })
   bot.on('shardReady', event => {
     bot.shardStatusUpdate(event.id, {status: 'online', game: {name: `Shard: ${event.id} || ==help`, type: 0}})
     log.info('Gateway', 'Shard: ' + event.id + ' joined the hive')
-    this.lavalink.recover()
   })
 
   // Send events to cache worker
