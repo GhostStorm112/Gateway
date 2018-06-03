@@ -8,10 +8,6 @@ const amqp = require('amqplib')
 const log = new GhostCore.Logger()
 const args = GhostCore.Utils.ParseArgs()
 const bot = new CloudStorm(process.env.TOKEN, {
-  initialPresence: {
-    status: 'online',
-    game: { name: process.env.GAME, type: 3 } // Watching the weather
-  },
   firstShardId: args.firstShard || 0,
   lastShardId: args.lastShard || (args.numShards ? args.numShards - 1 : 0),
   shardAmount: args.numShards || (args.firstShard && args.lastShard ? args.lastShard - args.firstShard + 1 : 1)
@@ -46,6 +42,7 @@ async function run () {
   bot.on('error', error => console.log(error))
   bot.on('ready', () => log.info('Gateway', 'Connected to gateway'))
   bot.on('shardReady', event => {
+    bot.shardStatusUpdate(event.id, {status: 'online', game: {name: `Shard: ${event.id} || ==help`, type: 0}})
     log.info('Gateway', 'Shard: ' + event.id + ' joined the hive')
     this.lavalink.recover()
   })
