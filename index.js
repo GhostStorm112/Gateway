@@ -12,7 +12,6 @@ const bot = new CloudStorm(process.env.TOKEN, {
   lastShardId: args.lastShard || (args.numShards ? args.numShards - 1 : 0),
   shardAmount: args.numShards || (args.firstShard && args.lastShard ? args.lastShard - args.firstShard + 1 : 1)
 })
-
 async function run () {
   // Setup redis cache
   this.redis = new Cache({
@@ -21,7 +20,6 @@ async function run () {
     db: 2
   })
   log.info('Gateway', 'Starting gateway')
-
   const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost')
   const channel = await connection.createChannel()
 
@@ -34,8 +32,6 @@ async function run () {
     redis: this.redis,
     gateway: await channel
   })
-
-  this.voiceSessions = new Map()
 
   await bot.connect()
 
@@ -53,6 +49,7 @@ async function run () {
   channel.assertQueue('weather-pre-cache', { durable: false, autoDelete: true })
 
   bot.on('event', event => {
+    // const heap = Math.round(process.memoryUsage().heapUsed / 1024 / 1024)
     channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify(event)))
     if (event.t === 'VOICE_SERVER_UPDATE') {
       this.lavalink.voiceServerUpdate(event.d)
@@ -81,11 +78,13 @@ async function rshards () {
 // Cache players
 async function gvsu (packet) {
   const queue = this.lavalink.queues.get(packet.d.guild_id)
+
   await queue.player.join(packet.d.channel_id)
-  queue.player.on('event', d => console.log(d))
   queue.player.on('error', console.error)
+
   const players = await this.redis.storage.get('players', { type: 'arr' })
   let index
+
   if (Array.isArray(players)) index = players.findIndex(player => player.guild_id === packet.d.guild_id)
   if (((!players && !index) || index < 0) && packet.d.channel_id) {
     await this.redis.storage.upsert('players', [{ guild_id: packet.d.guild_id, channel_id: packet.d.channel_id }])

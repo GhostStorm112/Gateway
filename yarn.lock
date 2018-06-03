@@ -44,7 +44,7 @@ Cloudstorm@DasWolke/CloudStorm#dev:
 
 "Core@https://gitlab.com/GhostStorm/Core.git":
   version "0.0.2"
-  resolved "https://gitlab.com/GhostStorm/Core.git#f079ce5392e2959079059c59f08015b28cf23719"
+  resolved "https://gitlab.com/GhostStorm/Core.git#1faa27bb2b6f3d4f64df8fe86ebc8d9943191d88"
   dependencies:
     lavalink "^0.7.2"
     lavaqueue "^0.4.1"
