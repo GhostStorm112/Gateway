@@ -15,8 +15,8 @@
   resolved "https://registry.yarnpkg.com/@spectacles/types/-/types-0.1.3.tgz#7317ad19fa4c6df62c081adf15925456a7fcdc58"
 
 "@types/node@*":
-  version "10.3.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.0.tgz#078516315a84d56216b5d4fed8f75d59d3b16cac"
+  version "10.3.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.2.tgz#3840ec6c12556fdda6e0e6d036df853101d732a4"
 
 "@types/node@8.0.31":
   version "8.0.31"
@@ -42,13 +42,13 @@ Cloudstorm@DasWolke/CloudStorm#dev:
     erlpack "github:discordapp/erlpack"
     eventemitter3 "~2.0.3"
 
-"Core@https://gitlab.com/GhostStorm/Core.git":
+"Core@https://gitlab.com/GhostStorm/Core.git", "ghost-core@https://gitlab.com/GhostStorm/Core.git":
   version "0.0.2"
-  resolved "https://gitlab.com/GhostStorm/Core.git#1faa27bb2b6f3d4f64df8fe86ebc8d9943191d88"
+  resolved "https://gitlab.com/GhostStorm/Core.git#df5cce7c22466b39c6044458861ca42c4d5edcdd"
   dependencies:
-    lavalink "^0.7.2"
-    lavaqueue "^0.4.1"
-    winston "^3.0.0-rc5"
+    lavalink "0.7.2"
+    lavaqueue "0.4.1"
+    winston "3.0.0-rc5"
 
 acorn-jsx@^3.0.0:
   version "3.0.1"
@@ -61,8 +61,8 @@ acorn@^3.0.4:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-3.3.0.tgz#45e37fb39e8da3f25baee3ff5369e2bb5f22017a"
 
 acorn@^5.5.0:
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.6.1.tgz#c9e50c3e3717cf897f1b071ceadbb543bbc0a8d4"
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.6.2.tgz#b1da1d7be2ac1b4a327fb9eab851702c5045b4e7"
 
 ajv-keywords@^2.1.0:
   version "2.1.1"
@@ -375,8 +375,8 @@ delayed-stream@~1.0.0:
   resolved "https://registry.yarnpkg.com/delayed-stream/-/delayed-stream-1.0.0.tgz#df3ae199acadfb7d440aaae0b29e2272b24ec619"
 
 denque@^1.1.0:
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/denque/-/denque-1.2.6.tgz#8d3d7a1bb8dc96286368d41a9a522db6581ab00d"
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/denque/-/denque-1.3.0.tgz#681092ef44a630246d3f6edb2a199230eae8e76b"
 
 diagnostics@^1.0.1:
   version "1.1.0"
@@ -699,8 +699,8 @@ has-flag@^3.0.0:
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-3.0.0.tgz#b5d454dc2199ae225699f3467e5a07f3b955bafd"
 
 has@^1.0.1:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/has/-/has-1.0.2.tgz#1a64bfe4b52e67fb87b9822503d97c019fb6ba42"
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/has/-/has-1.0.3.tgz#722d7cbfc1f6aa8241f16dd814e011e1f41e8796"
   dependencies:
     function-bind "^1.1.1"
 
@@ -863,13 +863,13 @@ kuler@0.0.x:
   dependencies:
     colornames "0.0.2"
 
-lavalink@0.7.2, lavalink@^0.7.2:
+lavalink@0.7.2:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/lavalink/-/lavalink-0.7.2.tgz#303a263a886aafa54adf5faf6d1970c33e3f1438"
   dependencies:
     ws "^4.0.0"
 
-lavaqueue@0.4.1, lavaqueue@^0.4.1:
+lavaqueue@0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/lavaqueue/-/lavaqueue-0.4.1.tgz#003c55beaffc03ec1c48601a0578890c5b765431"
   dependencies:
@@ -966,7 +966,7 @@ lodash@^4.0.0, lodash@^4.17.10, lodash@^4.17.4, lodash@^4.3.0:
   version "4.17.10"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
-logform@^1.7.0:
+logform@^1.4.1:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/logform/-/logform-1.7.0.tgz#53f7f6f012960c79368f84531fce716cd47b2b8e"
   dependencies:
@@ -1081,8 +1081,8 @@ os-tmpdir@~1.0.2:
   resolved "https://registry.yarnpkg.com/os-tmpdir/-/os-tmpdir-1.0.2.tgz#bbe67406c79aa85c5cfec766fe5734555dfa1274"
 
 p-limit@^1.1.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-1.2.0.tgz#0e92b6bedcb59f022c13d0f1949dc82d15909f1c"
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-1.3.0.tgz#b86bd5f0c25690911c7590fcbfc2010d54b3ccb8"
   dependencies:
     p-try "^1.0.0"
 
@@ -1437,7 +1437,7 @@ tmp@^0.0.33:
   dependencies:
     os-tmpdir "~1.0.2"
 
-triple-beam@^1.2.0, triple-beam@^1.3.0:
+triple-beam@^1.0.1, triple-beam@^1.2.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/triple-beam/-/triple-beam-1.3.0.tgz#a595214c7298db8339eeeee083e4d10bd8cb8dd9"
 
@@ -1476,24 +1476,22 @@ which@^1.2.9:
   dependencies:
     isexe "^2.0.0"
 
-winston-transport@^4.0.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/winston-transport/-/winston-transport-4.1.0.tgz#4eedb6e3ad79bdd8a682e380abebd7b80951e797"
-  dependencies:
-    triple-beam "^1.2.0"
+winston-transport@^3.1.0:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/winston-transport/-/winston-transport-3.2.1.tgz#5b79b294096b1a18bfe502e769491553a2cb1042"
 
-winston@^3.0.0-rc5:
-  version "3.0.0-rc6"
-  resolved "https://registry.yarnpkg.com/winston/-/winston-3.0.0-rc6.tgz#f6a0417be6cc2fe5c9a64fbb698e8da674cdf26a"
+winston@3.0.0-rc5:
+  version "3.0.0-rc5"
+  resolved "https://registry.yarnpkg.com/winston/-/winston-3.0.0-rc5.tgz#bc383d32b0e774d387a66e77290fe78766468f34"
   dependencies:
     async "^2.6.0"
     diagnostics "^1.0.1"
     is-stream "^1.1.0"
-    logform "^1.7.0"
+    logform "^1.4.1"
     one-time "0.0.4"
     stack-trace "0.0.x"
-    triple-beam "^1.3.0"
-    winston-transport "^4.0.0"
+    triple-beam "^1.0.1"
+    winston-transport "^3.1.0"
 
 wordwrap@~1.0.0:
   version "1.0.0"
