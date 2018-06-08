@@ -8,27 +8,26 @@
 	"license": "MIT",
 	"scripts": {
 		"test": "eslint ."
-	},
+	},	
 	"dependencies": {
-		"@spectacles/cache": "0.3.12",
 		"Cloudstorm": "DasWolke/CloudStorm#dev",
 		"Core": "https://gitlab.com/GhostStorm/Core.git",
-		"amqplib": "0.5.2",
+		"ioredis": "^3.2.2",
 		"bluebird": "3.5.1",
-		"dblapi.js": "2.0.1",
-		"ghost-core": "https://gitlab.com/GhostStorm/Core.git",
-		"ioredis": "3.2.2",
-		"lavalink": "0.7.2",
-		"lavaqueue": "0.4.1"
+		"@spectacles/cache": "0.3.12",
+		"lavalink": "^0.7.0",
+		"lavaqueue": "^0.4.1",
+		"amqplib": "^0.5.2",
+		"dblapi.js": "^2.0.1"
 	},
 	"devDependencies": {
-		"dotenv": "6.0.0",
-		"eslint": "4.19.1",
-		"eslint-config-standard": "11.0.0",
-		"eslint-plugin-import": "2.12.0",
-		"eslint-plugin-node": "6.0.1",
-		"eslint-plugin-promise": "3.8.0",
-		"eslint-plugin-standard": "3.1.0"
+		"eslint": "^4.19.1",
+		"eslint-config-standard": "^11.0.0-beta.0",
+		"eslint-plugin-import": "^2.8.0",
+		"eslint-plugin-node": "^6.0.0",
+		"eslint-plugin-promise": "^3.6.0",
+		"eslint-plugin-standard": "^3.0.1",
+		"dotenv": "^5.0.1"
 	},
 	"eslintConfig": {
 		"extends": "standard",
