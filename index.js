@@ -38,7 +38,7 @@ async function run () {
 
   await bot.connect()
 
-  bot.on('error', error => console.log(error))
+  bot.on('error', error => log.error('ERROR', error))
   bot.on('ready', () => {
     log.info('Gateway', 'Connected to gateway')
     this.lavalink.recover()
