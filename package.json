@@ -17,8 +17,7 @@
 		"@spectacles/cache": "0.3.12",
 		"lavalink": "^0.7.0",
 		"lavaqueue": "^0.4.1",
-		"amqplib": "^0.5.2",
-		"dblapi.js": "^2.0.1"
+		"amqplib": "^0.5.2"
 	},
 	"devDependencies": {
 		"eslint": "^4.19.1",

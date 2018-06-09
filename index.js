@@ -13,16 +13,15 @@ const bot = new CloudStorm(process.env.TOKEN, {
   shardAmount: args.numShards || (args.firstShard && args.lastShard ? args.lastShard - args.firstShard + 1 : 1)
 })
 
-const DBL = require('dblapi.js')
-const dbl = new DBL(process.env.DB_TOKEN)
 async function run () {
+  log.info('Gateway', 'Starting gateway')
+
   // Setup redis cache
   this.redis = new Cache({
     port: 6379,
     host: process.env.REDIS_URL,
     db: 2
   })
-  log.info('Gateway', 'Starting gateway')
   const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost')
   const channel = await connection.createChannel()
 
@@ -42,6 +41,9 @@ async function run () {
   bot.on('ready', () => {
     log.info('Gateway', 'Connected to gateway')
     this.lavalink.recover()
+     setInterval(() => {
+      channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify({t: 'dblu'})))
+    }, 1800000)
   })
   bot.on('shardReady', event => {
     bot.shardStatusUpdate(event.id, {status: 'online', game: {name: `Shard: ${event.id} || ==help`, type: 0}})
