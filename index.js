@@ -41,7 +41,7 @@ async function run () {
   bot.on('ready', () => {
     log.info('Gateway', 'Connected to gateway')
     this.lavalink.recover()
-     setInterval(() => {
+    setInterval(() => {
       channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify({t: 'dblu'})))
     }, 1800000)
   })
