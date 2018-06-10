@@ -33,7 +33,7 @@ if (process.env.STATSD) {
   statsClient = new StatsD({
     host: process.env.STATSD_HOST,
     port: process.env.STATSD_PORT,
-    prefix: process.env.STATSD_PREFIX,
+    prefix: process.env.STATSDGs_PREFIX,
     telegraf: true
   })
 }
@@ -120,7 +120,6 @@ async function run () {
   channel.assertQueue('weather-gateway-requests', { durable: false, autoDelete: true })
   channel.consume('weather-gateway-requests', event => {
     const devent = JSON.parse(event.content.toString())
-    processRequest(event)
     if (devent.t === 'LAVALINK') {
       return processMusicRequest(devent)
     } else {
@@ -205,7 +204,6 @@ async function processMusicRequest (event) {
       })
       break
   }
-  return null
 }
 
 run().catch(error => console.log(error))
