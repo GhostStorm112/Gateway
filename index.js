@@ -33,7 +33,7 @@ if (process.env.STATSD) {
   statsClient = new StatsD({
     host: process.env.STATSD_HOST,
     port: process.env.STATSD_PORT,
-    prefix: process.env.STATSDGs_PREFIX,
+    prefix: process.env.STATSDG_PREFIX,
     telegraf: true
   })
 }
