@@ -5,17 +5,55 @@ const GhostCore = require('Core')
 const CloudStorm = require('Cloudstorm')
 const { default: Cache } = require('@spectacles/cache')
 const amqp = require('amqplib')
-const log = new GhostCore.Logger()
+const express = require('express')
+const bodyParser = require('body-parser')
 const args = GhostCore.Utils.ParseArgs()
+const shardRouter = require('./routes/shardStatusRoutes')
+const gatewayRouter = require('./routes/gatewayRoutes')
+const app = express()
+let StatsD
+let statsClient
+const log = new GhostCore.Logger()
 const bot = new CloudStorm(process.env.TOKEN, {
   firstShardId: args.firstShard || 0,
   lastShardId: args.lastShard || (args.numShards ? args.numShards - 1 : 0),
   shardAmount: args.numShards || (args.firstShard && args.lastShard ? args.lastShard - args.firstShard + 1 : 1)
 })
 
+const version = require('./package.json').version
+
+// Setup StatsD
+
+try {
+  StatsD = require('hot-shots')
+} catch (e) {
+
+}
+if (process.env.STATSD) {
+  statsClient = new StatsD({
+    host: process.env.STATSD_HOST,
+    port: process.env.STATSD_PORT,
+    prefix: process.env.STATSD_PREFIX,
+    telegraf: true
+  })
+}
+
+// Setup REST
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
+app.use((req, res, next) => {
+  req.bot = bot
+  next()
+})
+app.use('/shards', shardRouter)
+app.use('/gateway', gatewayRouter)
+app.all('/', (req, res) => {
+  res.json({version: version, gatewayVersion: bot.version})
+})
+app.listen(process.env.GW_PORT, process.env.GW_HOST)
+
 async function run () {
   log.info('Gateway', 'Starting gateway')
-
   // Setup redis cache
   this.redis = new Cache({
     port: 6379,
@@ -54,6 +92,20 @@ async function run () {
   channel.assertQueue('weather-pre-cache', { durable: false, autoDelete: true })
 
   bot.on('event', event => {
+    if (statsClient) {
+      statsClient.increment('discordevent', 1, 1, [`shard:${event.shard_id}`, `event:${event.t}`], (err) => {
+        if (err) {
+          console.log(err)
+        }
+      })
+      if (event.t !== 'PRESENCE_UPDATE') {
+        statsClient.increment('discordevent.np', 1, 1, [`shard:${event.shard_id}`, `event:${event.t}`], (err) => {
+          if (err) {
+            console.log(err)
+          }
+        })
+      }
+    }
     // const heap = Math.round(process.memoryUsage().heapUsed / 1024 / 1024)
     channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify(event)))
     if (event.t === 'VOICE_SERVER_UPDATE') {
@@ -68,6 +120,7 @@ async function run () {
   channel.assertQueue('weather-gateway-requests', { durable: false, autoDelete: true })
   channel.consume('weather-gateway-requests', event => {
     const devent = JSON.parse(event.content.toString())
+    processRequest(event)
     if (devent.t === 'LAVALINK') {
       return processMusicRequest(devent)
     } else {
@@ -100,6 +153,7 @@ async function gvsu (packet) {
     queue.player.removeAllListeners()
   }
 }
+
 async function processRequest (event) {
   switch (event.t) {
     case 'STATUS_UPDATE':
@@ -151,6 +205,7 @@ async function processMusicRequest (event) {
       })
       break
   }
+  return null
 }
 
 run().catch(error => console.log(error))
