@@ -9,7 +9,7 @@ class StatusUpdate extends RequestHandler {
     return ['STATUS_UPDATE']
   }
 
-  handle (event) {
+  async handle (event) {
     this.bot.statusUpdate(Object.assign({ status: 'online' }, event))
   }
 }

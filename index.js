@@ -59,6 +59,7 @@ app.listen(process.env.GW_PORT, process.env.GW_HOST)
 
 async function run () {
   log.info('Gateway', 'Starting gateway')
+
   // Setup redis cache
   this.redis = new Cache({
     port: 6379,
@@ -119,16 +120,12 @@ async function run () {
         })
       }
     }
-    // const heap = Math.round(process.memoryUsage().heapUsed / 1024 / 1024)
+    // Receive request from Discord
     channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify(event)))
     if (event.t === 'VOICE_SERVER_UPDATE') {
-      console.log('Voice Server Update')
-
       this.lavalink.voiceServerUpdate(event.d)
     }
     if (event.t === 'VOICE_STATE_UPDATE') {
-      console.log('Voice State Update')
-
       this.lavalink.voiceStateUpdate(event.d)
     }
   })
@@ -137,11 +134,9 @@ async function run () {
   channel.assertQueue('weather-gateway-requests', { durable: false, autoDelete: true })
   channel.consume('weather-gateway-requests', event => {
     const devent = JSON.parse(event.content.toString())
-    console.log(devent)
     processEvent(devent)
   })
 }
-// Cache players
 
 async function loadEventHandlers () {
   const files = await fs.readdirAsync('./requestHandlers')
