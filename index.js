@@ -11,6 +11,11 @@ const args = GhostCore.Utils.ParseArgs()
 const shardRouter = require('./routes/shardStatusRoutes')
 const gatewayRouter = require('./routes/gatewayRoutes')
 const app = express()
+const promisifyAll = require('tsubaki').promisifyAll
+const fs = promisifyAll(require('fs'))
+const path = require('path')
+const Eventemitter = require('eventemitter3')
+const EE = new Eventemitter()
 let StatsD
 let statsClient
 const log = new GhostCore.Logger()
@@ -63,6 +68,12 @@ async function run () {
   const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost')
   const channel = await connection.createChannel()
 
+  this.options = Object.assign({
+    disabledEvents: null,
+    camelCaseEvents: false,
+    eventPath: path.join(__dirname, './eventHandlers/')
+  })
+
   // Setup lavalink music client
   this.lavalink = await new GhostCore.LavalinkGatway({
     user: process.env.USERID || '326603853736837121',
@@ -72,7 +83,9 @@ async function run () {
     redis: this.redis,
     gateway: await channel
   })
-
+  this.eventHandlers = new Map()
+  this.bot = bot
+  await loadEventHandlers()
   await bot.connect()
 
   bot.on('error', error => log.error('ERROR', error))
@@ -109,9 +122,13 @@ async function run () {
     // const heap = Math.round(process.memoryUsage().heapUsed / 1024 / 1024)
     channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify(event)))
     if (event.t === 'VOICE_SERVER_UPDATE') {
+      console.log('Voice Server Update')
+
       this.lavalink.voiceServerUpdate(event.d)
     }
     if (event.t === 'VOICE_STATE_UPDATE') {
+      console.log('Voice State Update')
+
       this.lavalink.voiceStateUpdate(event.d)
     }
   })
@@ -120,90 +137,31 @@ async function run () {
   channel.assertQueue('weather-gateway-requests', { durable: false, autoDelete: true })
   channel.consume('weather-gateway-requests', event => {
     const devent = JSON.parse(event.content.toString())
-    if (devent.t === 'LAVALINK') {
-      return processMusicRequest(devent)
-    } else {
-      return processRequest(devent)
-    }
+    console.log(devent)
+    processEvent(devent)
   })
 }
-
-async function rshards () {
-  log.info('rshards', 'Restarting all shards')
-  bot.disconnect()
-}
 // Cache players
-async function gvsu (packet) {
-  const queue = this.lavalink.queues.get(packet.d.guild_id)
 
-  await queue.player.join(packet.d.channel_id)
-  queue.player.on('error', console.error)
+async function loadEventHandlers () {
+  const files = await fs.readdirAsync('./requestHandlers')
 
-  const players = await this.redis.storage.get('players', { type: 'arr' })
-  let index
+  for (const file of files) {
+    if (!file.endsWith('.js') || file.includes(' ')) { continue }
 
-  if (Array.isArray(players)) index = players.findIndex(player => player.guild_id === packet.d.guild_id)
-  if (((!players && !index) || index < 0) && packet.d.channel_id) {
-    await this.redis.storage.upsert('players', [{ guild_id: packet.d.guild_id, channel_id: packet.d.channel_id }])
-  } else if (players && typeof index !== 'undefined' && index >= 0 && !packet.d.channel_id) {
-    players.splice(index, 1)
-    if (players.length === 0) await this.redis.storage.delete('players')
-    else await this.redis.storage.set('players', players)
-    queue.player.removeAllListeners()
+    const handler = new (require('./requestHandlers/' + file))(this)
+    this.eventHandlers.set(handler.name, handler)
+
+    if (typeof handler.init === 'function') { await handler.init() }
+
+    for (const event of handler.canHandle) {
+      EE.on(event, handler.handle.bind(handler))
+    }
   }
 }
 
-async function processRequest (event) {
-  switch (event.t) {
-    case 'STATUS_UPDATE':
-      bot.statusUpdate(Object.assign({ status: 'online' }, event.d))
-      break
-    case 'VOICE_STATE_UPDATE':
-      gvsu(event)
-      this.lavalink.voiceStateUpdate(event.d)
-      bot.voiceStateUpdate(event.d.shard_id || 0, event.d)
-      break
-    case 'LCQUEUE':
-      break
-    case 'RSHARDS':
-      rshards()
-      break
-    default:
-      break
-  }
-
-  return null
-}
-
-async function processMusicRequest (event) {
-  let queue = await this.lavalink.queues.get(event.d.guild_id)
-  switch (event.d.action) {
-    case 'PLAY':
-      await queue.add(event.d.song)
-      if (!queue.player.playing && !queue.player.paused) await queue.start()
-      break
-    case 'STOP':
-      queue.stop()
-      break
-    case 'PAUSE':
-      await queue.player.pause()
-      break
-    case 'SKIP':
-      queue.next()
-      break
-    case 'RESUME':
-      await queue.player.pause(false)
-      break
-    case 'LEAVE':
-      await queue.stop()
-      bot.voiceStateUpdate(event.d.shard_id || 0, {
-        guild_id: event.d.guild_id,
-        channel_id: null,
-        self_mute: false,
-        self_deaf: false
-      })
-      break
-  }
+async function processEvent (event) {
+  return EE.emit(event.t, event.d)
 }
 
 run().catch(error => console.log(error))
