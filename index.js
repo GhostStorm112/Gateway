@@ -91,7 +91,7 @@ async function run () {
 
   bot.on('error', error => log.error('ERROR', error))
   bot.on('ready', () => {
-    log.info('Gateway', 'Connected to gateway')
+    log.info('Gateway', 'Connected to Discord gateway')
     this.lavalink.recover()
     setInterval(() => {
       channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify({t: 'dblu'})))
