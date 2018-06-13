@@ -101,7 +101,9 @@ async function run () {
     bot.shardStatusUpdate(event.id, {status: 'online', game: {name: `Shard: ${event.id} || ==help`, type: 0}})
     log.info('Gateway', 'Shard: ' + event.id + ' joined the hive')
   })
-
+  bot.on('disconnected', event => {
+    log.info('Gateway', 'All shards disconnected succesfully')
+  })
   // Send events to cache worker
   channel.assertQueue('weather-pre-cache', { durable: false, autoDelete: true })
 
