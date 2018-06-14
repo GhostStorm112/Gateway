@@ -1,4 +1,5 @@
-FROM node:10-alpine
+FROM node:10.4.1-alpine
+LABEL name "Ghost-Gateway"
 LABEL maintainer "_112"
 COPY ./ /app
 # Add package.json for Yarn
