@@ -15,9 +15,9 @@ const promisifyAll = require('tsubaki').promisifyAll
 const fs = promisifyAll(require('fs'))
 const path = require('path')
 const Eventemitter = require('eventemitter3')
+const StatsD = require('hot-shots')
+
 const EE = new Eventemitter()
-let StatsD
-let statsClient
 const log = new GhostCore.Logger()
 const bot = new CloudStorm(process.env.TOKEN, {
   firstShardId: args.firstShard || 0,
@@ -26,23 +26,16 @@ const bot = new CloudStorm(process.env.TOKEN, {
 })
 
 const version = require('./package.json').version
-
+let statsClient
 // Setup StatsD
-
-try {
-  StatsD = require('hot-shots')
-} catch (e) {
-
-}
 if (process.env.STATSD) {
   statsClient = new StatsD({
     host: process.env.STATSD_HOST,
     port: process.env.STATSD_PORT,
-    prefix: process.env.STATSDG_PREFIX,
+    prefix: process.env.STATSDC_PREFIX,
     telegraf: true
   })
 }
-
 // Setup REST
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
