@@ -70,7 +70,7 @@ async function run () {
 
   // Setup lavalink music client
   this.lavalink = await new GhostCore.LavalinkGatway({
-    user: process.env.USERID || '326603853736837121',
+    user: process.env.BOT_ID,
     password: process.env.LAVALINK_PASSWORD,
     rest: process.env.LAVALINK_REST,
     ws: process.env.LAVALINK_WS,
