@@ -1,20 +1,20 @@
 require('bluebird')
 require('dotenv').config()
 
-const GhostCore = require('Core')
-const CloudStorm = require('Cloudstorm')
 const { default: Cache } = require('@spectacles/cache')
 const amqp = require('amqplib')
-const express = require('express')
-const bodyParser = require('body-parser')
+const GhostCore = require('Core')
 const args = GhostCore.Utils.ParseArgs()
-const shardRouter = require('./routes/shardStatusRoutes')
-const gatewayRouter = require('./routes/gatewayRoutes')
+const bodyParser = require('body-parser')
+const CloudStorm = require('Cloudstorm')
+const Eventemitter = require('eventemitter3')
+const express = require('express')
 const app = express()
 const promisifyAll = require('tsubaki').promisifyAll
 const fs = promisifyAll(require('fs'))
+const gatewayRouter = require('./routes/gatewayRoutes')
 const path = require('path')
-const Eventemitter = require('eventemitter3')
+const shardRouter = require('./routes/shardStatusRoutes')
 const StatsD = require('hot-shots')
 
 const EE = new Eventemitter()
@@ -83,9 +83,10 @@ async function run () {
   await bot.connect()
 
   bot.on('error', error => log.error('ERROR', error))
-  bot.on('ready', () => {
+  bot.on('ready', async () => {
     log.info('Gateway', 'Connected to Discord gateway')
-    this.lavalink.recover()
+    await this.bot.getGatewayBot().then(function (gateway) { this.lavalink.recover(gateway.shards) })
+
     setInterval(() => {
       channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify({t: 'dblu'})))
     }, 1800000)
@@ -94,9 +95,7 @@ async function run () {
     bot.shardStatusUpdate(event.id, {status: 'online', game: {name: `Shard: ${event.id} || ==help`, type: 0}})
     log.info('Gateway', 'Shard: ' + event.id + ' joined the hive')
   })
-  bot.on('disconnected', event => {
-    log.info('Gateway', 'All shards disconnected succesfully')
-  })
+  bot.on('disconnected', () => { log.info('Gateway', 'All shards disconnected succesfully') })
   // Send events to cache worker
   channel.assertQueue('weather-pre-cache', { durable: false, autoDelete: true })
 
@@ -129,7 +128,7 @@ async function run () {
   channel.assertQueue('weather-gateway-requests', { durable: false, autoDelete: true })
   channel.consume('weather-gateway-requests', event => {
     const devent = JSON.parse(event.content.toString())
-    processEvent(devent)
+    EE.emit(devent.t, devent.d)
   })
 }
 
@@ -148,10 +147,6 @@ async function loadEventHandlers () {
       EE.on(event, handler.handle.bind(handler))
     }
   }
-}
-
-async function processEvent (event) {
-  return EE.emit(event.t, event.d)
 }
 
 run().catch(error => console.log(error))
