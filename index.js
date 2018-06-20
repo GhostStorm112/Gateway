@@ -81,11 +81,10 @@ async function run () {
   this.bot = bot
   await loadEventHandlers()
   await bot.connect()
-
   bot.on('error', error => log.error('ERROR', error))
   bot.on('ready', async () => {
     log.info('Gateway', 'Connected to Discord gateway')
-    await this.bot.getGatewayBot().then(function (gateway) { this.lavalink.recover(gateway.shards) })
+    this.lavalink.recover(args.numShards || 0)
 
     setInterval(() => {
       channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify({t: 'dblu'})))

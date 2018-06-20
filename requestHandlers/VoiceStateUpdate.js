@@ -10,7 +10,6 @@ class VoiceStateUpdate extends RequestHandler {
 
   async handle (event) {
     console.log(event)
-
     await gvsu(event)
     this.lavalink.voiceStateUpdate(event)
     this.bot.voiceStateUpdate(event.shard_id || 0, event)
