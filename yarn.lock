@@ -42,9 +42,9 @@ Cloudstorm@DasWolke/CloudStorm#dev:
     erlpack "github:discordapp/erlpack"
     eventemitter3 "~2.0.3"
 
-"Core@https://gitlab.com/GhostStorm/Core.git":
+"Core@https://gitlab.com/GhostStorm/Core.git", "ghost-core@https://gitlab.com/GhostStorm/Core.git":
   version "0.0.4"
-  resolved "https://gitlab.com/GhostStorm/Core.git#bd16c388ffb960bd72ce58b613f72169df5a31d0"
+  resolved "https://gitlab.com/GhostStorm/Core.git#a6f37bba8f3aa680ac6f8e4d7c86156e84176f63"
   dependencies:
     lavalink "0.7.2"
     lavaqueue "0.4.1"
@@ -466,9 +466,9 @@ doctrine@^2.1.0:
   dependencies:
     esutils "^2.0.2"
 
-dotenv@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-5.0.1.tgz#a5317459bd3d79ab88cff6e44057a6a3fbb1fcef"
+dotenv@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.0.0.tgz#24e37c041741c5f4b25324958ebbc34bca965935"
 
 ee-first@1.1.1:
   version "1.1.1"
