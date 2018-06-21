@@ -79,7 +79,7 @@ async function run () {
   })
   this.eventHandlers = new Map()
   this.bot = bot
-  await loadEventHandlers()
+  await loadRequestHandlers()
   await bot.connect()
   bot.on('error', error => log.error('ERROR', error))
   bot.on('ready', async () => {
@@ -131,7 +131,7 @@ async function run () {
   })
 }
 
-async function loadEventHandlers () {
+async function loadRequestHandlers () {
   const files = await fs.readdirAsync('./requestHandlers')
 
   for (const file of files) {
