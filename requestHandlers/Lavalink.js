@@ -17,13 +17,13 @@ class Lavalink extends RequestHandler {
         if (!queue.player.playing && !queue.player.paused) await queue.start()
         break
       case 'STOP':
-        queue.stop()
+        await queue.stop()
         break
       case 'PAUSE':
         await queue.player.pause()
         break
       case 'SKIP':
-        queue.next()
+        await queue.next()
         break
       case 'RESUME':
         await queue.player.pause(false)

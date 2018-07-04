@@ -86,9 +86,9 @@ async function run () {
     log.info('Gateway', 'Connected to Discord gateway')
     this.lavalink.recover(args.numShards || 0)
 
-    setInterval(() => {
+    /* setInterval(() => {
       channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify({t: 'dblu'})))
-    }, 1800000)
+    }, 1800000) */
   })
   bot.on('shardReady', event => {
     bot.shardStatusUpdate(event.id, {status: 'online', game: {name: `Shard: ${event.id} || ==help`, type: 0}})
