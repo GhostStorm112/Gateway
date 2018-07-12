@@ -3,7 +3,7 @@ require('dotenv').config()
 
 const { default: Cache } = require('@spectacles/cache')
 const amqp = require('amqplib')
-const GhostCore = require('Core')
+const GhostCore = require('ghost-core')
 const args = GhostCore.Utils.ParseArgs()
 const bodyParser = require('body-parser')
 const CloudStorm = require('Cloudstorm')
@@ -53,18 +53,19 @@ app.listen(process.env.GW_PORT, process.env.GW_HOST)
 async function run () {
   log.info('Gateway', 'Starting gateway')
 
-  // Setup redis cache
+  // Setup redis for lavalink
   this.redis = new Cache({
     port: 6379,
     host: process.env.REDIS_URL,
     db: 2
   })
-
+  // Setup redis for cache of discord objects
   this.cache = new Cache({
     port: 6379,
     host: process.env.REDIS_URL,
     db: 3
   })
+
   const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost')
   const channel = await connection.createChannel()
 
