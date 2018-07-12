@@ -10,7 +10,7 @@ class Lavalink extends RequestHandler {
   }
 
   async handle (event) {
-    let queue = await this.lavalink.queues.get(event.guild_id)
+    let queue = await this.gateway.lavalink.queues.get(event.guild_id)
     switch (event.action) {
       case 'PLAY':
         await queue.add(event.song)
