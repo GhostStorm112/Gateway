@@ -41,7 +41,6 @@ async function run () {
   gateway.bot.on('disconnected', () => { gateway.log.info('Gateway', 'All shards disconnected succesfully') })
 
   gateway.bot.on('event', event => {
-    console.log(event.t)
     gateway.stats.increment('discordevent', 1, 1, [`shard:${event.shard_id}`, `event:${event.t}`], (err) => {
       if (err) {
         console.log(err)
