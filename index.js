@@ -59,6 +59,12 @@ async function run () {
     host: process.env.REDIS_URL,
     db: 2
   })
+
+  this.cache = new Cache({
+    port: 6379,
+    host: process.env.REDIS_URL,
+    db: 3
+  })
   const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost')
   const channel = await connection.createChannel()
 
@@ -96,7 +102,7 @@ async function run () {
   })
   bot.on('disconnected', () => { log.info('Gateway', 'All shards disconnected succesfully') })
   // Send events to cache worker
-  channel.assertQueue('weather-pre-cache', { durable: false, autoDelete: true })
+  channel.assertQueue('weather-events', { durable: false, messageTtl: 60e3 })
 
   bot.on('event', event => {
     if (statsClient) {
@@ -114,11 +120,13 @@ async function run () {
       }
     }
     // Receive request from Discord
-    channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify(event)))
+    channel.sendToQueue('weather-events', Buffer.from(JSON.stringify(event)))
     if (event.t === 'VOICE_SERVER_UPDATE') {
       this.lavalink.voiceServerUpdate(event.d)
     }
     if (event.t === 'VOICE_STATE_UPDATE') {
+      console.log(event.d)
+      this.cache.actions.voiceStates.upsert(event.d)
       this.lavalink.voiceStateUpdate(event.d)
     }
   })
