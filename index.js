@@ -1,108 +1,69 @@
 require('bluebird')
 require('dotenv').config()
 const GhostGateway = require('../libs/ghost-gateway')
-const amqp = require('amqplib')
+// const amqp = require('amqplib')
 const GhostCore = require('ghost-core')
 const args = GhostCore.Utils.ParseArgs()
-const CloudStorm = require('Cloudstorm')
-const Eventemitter = require('eventemitter3')
-const promisifyAll = require('tsubaki').promisifyAll
-const fs = promisifyAll(require('fs'))
 const path = require('path')
 
-const EE = new Eventemitter()
-const bot = new CloudStorm(process.env.TOKEN, {
-  firstShardId: args.firstShard || 0,
-  lastShardId: args.lastShard || (args.numShards ? args.numShards - 1 : 0),
-  shardAmount: args.numShards || (args.firstShard && args.lastShard ? args.lastShard - args.firstShard + 1 : 1)
-})
-
-// Setup REST
-
 async function run () {
-  const connection = await amqp.connect(process.env.AMQP_URL || 'amqp://localhost')
-  const channel = await connection.createChannel()
-  this.gateway = new GhostGateway({channel: channel})
-
-  this.gateway.log.info('Gateway', 'Starting gateway')
-
-  this.options = Object.assign({
-    disabledEvents: null,
-    camelCaseEvents: false,
-    eventPath: path.join(__dirname, './eventHandlers/')
+  const gateway = new GhostGateway({
+    amqpUrl: process.env.AMQP_URL,
+    redisUrl: process.env.REDIS_URL,
+    token: process.env.TOKEN,
+    botId: process.env.BOT_ID,
+    lavalinkPassword: process.env.LAVALINK_PASSWORD,
+    lavalinkRest: process.env.LAVALINK_REST,
+    lavalinkWs: process.env.LAVALINK_WS,
+    statsHost: process.env.STATS_HOST,
+    statsPort: process.env.STATS_PORT,
+    statsPrefix: process.env.STATS_PREFIX,
+    eventPath: path.join(__dirname, './requestHandlers/')
   })
+  gateway.log.info('Gateway', 'Starting gateway')
 
-  this.eventHandlers = new Map()
-  this.bot = bot
+  await gateway.initialize()
+  gateway.on('error', error => gateway.log.error('ERROR', error))
+  gateway.bot.on('error', error => gateway.log.error('ERROR', error))
 
-  await loadRequestHandlers()
-  await bot.connect()
-  bot.on('error', error => this.gateway.log.error('ERROR', error))
-  bot.on('ready', async () => {
-    this.gateway.log.info('Gateway', 'Connected to Discord gateway')
-    this.gateway.lavalink.recover(args.numShards || 0)
+  gateway.bot.on('ready', async () => {
+    gateway.log.info('Gateway', 'Connected to Discord gateway')
+    gateway.lavalink.recover(args.numShards || 0)
 
     /* setInterval(() => {
       channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify({t: 'dblu'})))
     }, 1800000) */
   })
-  bot.on('shardReady', event => {
-    bot.shardStatusUpdate(event.id, {status: 'online', game: {name: `Shard: ${event.id} || ==help`, type: 0}})
-    this.gateway.log.info('Gateway', 'Shard: ' + event.id + ' joined the hive')
+  gateway.bot.on('shardReady', event => {
+    gateway.bot.shardStatusUpdate(event.id, {status: 'online', game: {name: `Shard: ${event.id} || ==help`, type: 0}})
+    gateway.log.info('Gateway', 'Shard: ' + event.id + ' joined the hive')
   })
-  bot.on('disconnected', () => { this.gateway.log.info('Gateway', 'All shards disconnected succesfully') })
-  // Send events to cache worker
-  channel.assertQueue('weather-events', { durable: false, messageTtl: 60e3 })
+  gateway.bot.on('disconnected', () => { gateway.log.info('Gateway', 'All shards disconnected succesfully') })
 
-  bot.on('event', event => {
-    this.gateway.stats.increment('discordevent', 1, 1, [`shard:${event.shard_id}`, `event:${event.t}`], (err) => {
+  gateway.bot.on('event', event => {
+    console.log(event.t)
+    gateway.stats.increment('discordevent', 1, 1, [`shard:${event.shard_id}`, `event:${event.t}`], (err) => {
       if (err) {
         console.log(err)
       }
     })
     if (event.t !== 'PRESENCE_UPDATE') {
-      this.gateway.stats.increment('discordevent.np', 1, 1, [`shard:${event.shard_id}`, `event:${event.t}`], (err) => {
+      gateway.stats.increment('discordevent.np', 1, 1, [`shard:${event.shard_id}`, `event:${event.t}`], (err) => {
         if (err) {
           console.log(err)
         }
       })
     }
+    gateway.workerConnector.sendToQueue(event)
 
-    // Receive request from Discord
-    channel.sendToQueue('weather-events', Buffer.from(JSON.stringify(event)))
     if (event.t === 'VOICE_SERVER_UPDATE') {
-      this.gateway.lavalink.voiceServerUpdate(event.d)
+      gateway.lavalink.voiceServerUpdate(event.d)
     }
     if (event.t === 'VOICE_STATE_UPDATE') {
-      console.log(event.d)
-      this.gateway.cache.actions.voiceStates.upsert(event.d)
-      this.gateway.lavalink.voiceStateUpdate(event.d)
+      gateway.cache.actions.voiceStates.upsert(event.d)
+      gateway.lavalink.voiceStateUpdate(event.d)
     }
   })
-
-  // Receive requests from bot
-  channel.assertQueue('weather-gateway-requests', { durable: false, autoDelete: true })
-  channel.consume('weather-gateway-requests', event => {
-    const devent = JSON.parse(event.content.toString())
-    EE.emit(devent.t, devent.d)
-  })
-}
-
-async function loadRequestHandlers () {
-  const files = await fs.readdirAsync('./requestHandlers')
-
-  for (const file of files) {
-    if (!file.endsWith('.js') || file.includes(' ')) { continue }
-
-    const handler = new (require('./requestHandlers/' + file))(this)
-    this.eventHandlers.set(handler.name, handler)
-
-    if (typeof handler.init === 'function') { await handler.init() }
-
-    for (const event of handler.canHandle) {
-      EE.on(event, handler.handle.bind(handler))
-    }
-  }
 }
 
 run().catch(error => console.log(error))
