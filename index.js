@@ -18,6 +18,8 @@ async function run () {
     statsHost: process.env.STATS_HOST,
     statsPort: process.env.STATS_PORT,
     statsPrefix: process.env.STATS_PREFIX,
+    gwHost: '127.0.0.1',
+    gwPort: 7000,
     eventPath: path.join(__dirname, './requestHandlers/')
   })
   gateway.log.info('Gateway', 'Starting gateway')
