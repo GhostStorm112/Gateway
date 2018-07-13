@@ -12,7 +12,7 @@
 	"dependencies": {
 		"@spectacles/cache": "0.3.12",
 		"Cloudstorm": "DasWolke/CloudStorm#dev",
-		"ghost-core": "../libs/ghost-core",
+		"ghost-core": "https://gitlab.com/GhostStorm/Core.git",
 		"amqplib": "^0.5.2",
 		"bluebird": "3.5.1",
 		"body-parser": "^1.18.3",

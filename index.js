@@ -1,7 +1,6 @@
 require('bluebird')
 require('dotenv').config()
 const GhostGateway = require('../libs/ghost-gateway')
-// const amqp = require('amqplib')
 const GhostCore = require('ghost-core')
 const args = GhostCore.Utils.ParseArgs()
 const path = require('path')
@@ -31,7 +30,6 @@ async function run () {
   gateway.bot.on('ready', async () => {
     gateway.log.info('Gateway', 'Connected to Discord gateway')
     gateway.lavalink.recover(args.numShards || 0)
-
     /* setInterval(() => {
       channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify({t: 'dblu'})))
     }, 1800000) */
