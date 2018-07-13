@@ -1,26 +1,24 @@
 require('bluebird')
 require('dotenv').config()
 const GhostGateway = require('ghost-gateway')
-const GhostCore = require('ghost-core')
-const args = GhostCore.Utils.ParseArgs()
 const path = require('path')
-
+const gateway = new GhostGateway({
+  amqpUrl: process.env.AMQP_URL,
+  redisUrl: process.env.REDIS_URL,
+  token: process.env.TOKEN,
+  botId: process.env.BOT_ID,
+  lavalinkPassword: process.env.LAVALINK_PASSWORD,
+  lavalinkRest: process.env.LAVALINK_REST,
+  lavalinkWs: process.env.LAVALINK_WS,
+  statsHost: process.env.STATS_HOST,
+  statsPort: process.env.STATS_PORT,
+  statsPrefix: process.env.STATS_PREFIX,
+  gwHost: '127.0.0.1',
+  gwPort: 7000,
+  eventPath: path.join(__dirname, './requestHandlers/'),
+  numShards: 1
+})
 async function run () {
-  const gateway = new GhostGateway({
-    amqpUrl: process.env.AMQP_URL,
-    redisUrl: process.env.REDIS_URL,
-    token: process.env.TOKEN,
-    botId: process.env.BOT_ID,
-    lavalinkPassword: process.env.LAVALINK_PASSWORD,
-    lavalinkRest: process.env.LAVALINK_REST,
-    lavalinkWs: process.env.LAVALINK_WS,
-    statsHost: process.env.STATS_HOST,
-    statsPort: process.env.STATS_PORT,
-    statsPrefix: process.env.STATS_PREFIX,
-    gwHost: '127.0.0.1',
-    gwPort: 7000,
-    eventPath: path.join(__dirname, './requestHandlers/')
-  })
   gateway.log.info('Gateway', 'Starting gateway')
 
   await gateway.initialize()
@@ -29,7 +27,7 @@ async function run () {
 
   gateway.bot.on('ready', async () => {
     gateway.log.info('Gateway', 'Connected to Discord gateway')
-    gateway.lavalink.recover(args.numShards || 0)
+    gateway.lavalink.recover(0)
     /* setInterval(() => {
       channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify({t: 'dblu'})))
     }, 1800000) */
