@@ -13,6 +13,7 @@
 		"@spectacles/cache": "0.3.12",
 		"Cloudstorm": "DasWolke/CloudStorm#dev",
 		"ghost-core": "https://gitlab.com/GhostStorm/Core.git",
+		"ghost-gateway": "https://gitlab.com/GhostStorm/ghost-gateway.git",
 		"amqplib": "^0.5.2",
 		"bluebird": "3.5.1",
 		"body-parser": "^1.18.3",

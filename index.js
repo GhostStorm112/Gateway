@@ -1,6 +1,6 @@
 require('bluebird')
 require('dotenv').config()
-const GhostGateway = require('../libs/ghost-gateway')
+const GhostGateway = require('ghost-gateway')
 const GhostCore = require('ghost-core')
 const args = GhostCore.Utils.ParseArgs()
 const path = require('path')
