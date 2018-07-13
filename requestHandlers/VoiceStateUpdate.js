@@ -16,8 +16,6 @@ class VoiceStateUpdate extends RequestHandler {
 
     const players = await this.redis.storage.get('players', { type: 'arr' })
     let index
-    console.log(players)
-    console.log({ guild_id: event.guild_id, channel_id: event.channel_id })
     if (Array.isArray(players)) index = players.findIndex(player => player.guild_id === event.guild_id)
     if (((!players && !index) || index < 0) && event.channel_id) {
       await this.redis.storage.upsert('players', [{ guild_id: event.guild_id, channel_id: event.channel_id }])
