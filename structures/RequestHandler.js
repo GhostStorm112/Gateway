@@ -8,7 +8,7 @@ class RequestHandler {
   constructor (handler) {
     Object.defineProperty(this, 'bot', { value: handler.bot })
     Object.defineProperty(this, 'lavalink', { value: handler.lavalink })
-    Object.defineProperty(this, 'redis', { value: handler.redis })
+    Object.defineProperty(this, 'cache', { value: handler.cache })
   }
 
   get name () {

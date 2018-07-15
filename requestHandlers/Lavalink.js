@@ -10,10 +10,9 @@ class Lavalink extends RequestHandler {
   }
 
   async handle (event) {
-    let queue = await this.lavalink.queues.get(event.guild_id)
+    const queue = await this.lavalink.queues.get(event.guild_id)
     switch (event.action) {
       case 'PLAY':
-        await queue.player.join(event.channel_id)
         await queue.add(event.song)
         if (!queue.player.playing && !queue.player.paused) await queue.start()
         break

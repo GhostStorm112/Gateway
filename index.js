@@ -1,6 +1,6 @@
 require('bluebird')
 require('dotenv').config()
-const GhostGateway = require('ghost-gateway')
+const GhostGateway = require('../libs/ghost-gateway')
 const path = require('path')
 const gateway = new GhostGateway({
   amqpUrl: process.env.AMQP_URL,
@@ -52,13 +52,14 @@ async function run () {
       })
     }
     gateway.workerConnector.sendToQueue(event)
-
-    if (event.t === 'VOICE_SERVER_UPDATE') {
-      gateway.lavalink.voiceServerUpdate(event.d)
-    }
-    if (event.t === 'VOICE_STATE_UPDATE') {
-      gateway.cache.actions.voiceStates.upsert(event.d)
-      gateway.lavalink.voiceStateUpdate(event.d)
+    switch (event.t) {
+      case 'VOICE_SERVER_UPDATE':
+        gateway.lavalink.voiceServerUpdate(event.d)
+        break
+      case 'VOICE_STATE_UPDATE':
+        gateway.cache.actions.voiceStates.upsert(event.d)
+        gateway.lavalink.voiceStateUpdate(event.d)
+        break
     }
   })
 }

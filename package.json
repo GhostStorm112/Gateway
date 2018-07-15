@@ -10,25 +10,14 @@
 		"test": "eslint ."
 	},
 	"dependencies": {
-		"@spectacles/cache": "0.3.12",
 		"Cloudstorm": "DasWolke/CloudStorm#dev",
 		"ghost-core": "https://gitlab.com/GhostStorm/Core.git",
 		"ghost-gateway": "https://gitlab.com/GhostStorm/ghost-gateway.git",
-		"amqplib": "^0.5.2",
-		"bluebird": "3.5.1",
-		"body-parser": "^1.18.3",
-		"eventemitter3": "^3.1.0",
-		"express": "^4.16.3",
-		"hot-shots": "^5.6.1",
-		"ioredis": "^3.2.2",
-		"lavalink": "^0.7.0",
-		"lavaqueue": "^0.4.1",
-		"tsubaki": "^1.3.0"
+		"bluebird": "3.5.1"
 	},
 	"devDependencies": {
 		"dotenv": "^6.0.0",
-		"eslint": "^4.19.1",
-		"eslint-config-standard": "^11.0.0-beta.0",
+		"eslint": "^5.1.0",
 		"eslint-plugin-import": "^2.8.0",
 		"eslint-plugin-node": "^6.0.0",
 		"eslint-plugin-promise": "^3.6.0",
