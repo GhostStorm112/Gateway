@@ -14,10 +14,10 @@ const gateway = new GhostGateway({
   statsPort: process.env.STATS_PORT,
   statsPrefix: process.env.STATS_PREFIX,
   gwHost: '127.0.0.1',
-  gwPort: 7000,
-  firstShard: 0,
-  lastShard: 0,
-  shardAmount: 2,
+  gwPort: 7001,
+  firstShard: 1,
+  lastShard: 1,
+  numShards: 2,
   eventPath: path.join(__dirname, './requestHandlers/')
 })
 async function run () {
