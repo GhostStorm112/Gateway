@@ -9,6 +9,7 @@ class VoiceStateUpdate extends RequestHandler {
   }
 
   async handle (event) {
+    console.log(event)
     const queue = await this.lavalink.queues.get(event.guild_id)
     await queue.player.join(event.channel_id)
     queue.player.on('error', console.error)
