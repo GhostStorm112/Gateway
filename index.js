@@ -15,13 +15,12 @@ const gateway = new GhostGateway({
   statsPrefix: process.env.STATS_PREFIX,
   gwHost: '127.0.0.1',
   gwPort: 7000,
-  firstShard: 0,
-  lastShard: 0,
-  shardAmount: 2,
+  firstShard: 1,
+  lastShard: 1,
+  numShards: 2,
   eventPath: path.join(__dirname, './requestHandlers/')
 })
 async function run () {
-  let lastevent
   gateway.log.info('Gateway', 'Starting gateway')
 
   await gateway.initialize()
@@ -30,23 +29,33 @@ async function run () {
 
   gateway.bot.on('ready', async () => {
     gateway.log.info('Gateway', 'Connected to Discord gateway')
-    gateway.lavalink.recover(0)
+    // sgateway.lavalink.recover(2)
     /* setInterval(() => {
       channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify({t: 'dblu'})))
     }, 1800000) */
+    let shards = gateway.bot.shardManager.shards
+    Object.keys(shards).forEach(function (shard) {
+      let _shard = shards[shard]
+      gateway.workerConnector.sendToQueue({
+        t: 'LAVALINK_RECOVER',
+        d: {
+          shard_amount: 2,
+          shard: _shard.id
+        }
+      })
+    })
   })
+
   gateway.bot.on('shardReady', event => {
     gateway.bot.shardStatusUpdate(event.id, {status: 'online', game: {name: `Shard: ${event.id} || ==help`, type: 0}})
     gateway.log.info('Gateway', 'Shard: ' + event.id + ' joined the hive')
   })
+
   gateway.bot.on('disconnected', () => { gateway.log.info('Gateway', 'All shards disconnected succesfully') })
 
   gateway.bot.on('event', event => {
-    lastevent = event
-    if (event === lastevent) {
-      console.log('Double event')
-      return
-    }
+    gateway.log.debug('EVENT', event.t)
+
     gateway.stats.increment('discordevent', 1, 1, [`shard:${event.shard_id}`, `event:${event.t}`], (err) => {
       if (err) {
         console.log(err)

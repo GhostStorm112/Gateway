@@ -10,7 +10,6 @@ class VoiceStateUpdate extends RequestHandler {
 
   async handle (event) {
     const queue = await this.lavalink.queues.get(event.guild_id)
-    console.log(event.shard_id)
     await queue.player.join(event.channel_id)
     queue.player.on('error', console.error)
     queue.player.on('event', d => console.log(d))
@@ -26,7 +25,7 @@ class VoiceStateUpdate extends RequestHandler {
       else await this.cache.storage.set('players', players)
       queue.player.removeAllListeners()
     }
-    this.bot.voiceStateUpdate(event.shard_id || 0, event)
+    this.bot.voiceStateUpdate(event.shard_id, event)
   }
 }
 
