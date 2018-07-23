@@ -13,16 +13,13 @@ const gateway = new GhostGateway({
   statsHost: process.env.STATS_HOST,
   statsPort: process.env.STATS_PORT,
   statsPrefix: process.env.STATS_PREFIX,
-  gwHost: '127.0.0.1',
-  gwPort: 7000,
-  firstShard: 0,
-  lastShard: 0,
-  numShards: 1,
+  firstShard: 1,
+  lastShard: 1,
+  numShards: 2,
   eventPath: path.join(__dirname, './requestHandlers/')
 })
 async function run () {
   gateway.log.info('Gateway', 'Starting gateway')
-  gateway.log.mode = 1
 
   await gateway.initialize()
   gateway.on('error', error => gateway.log.error('ERROR', error))
@@ -37,6 +34,7 @@ async function run () {
     let shards = gateway.bot.shardManager.shards
     Object.keys(shards).forEach(function (shard) {
       let _shard = shards[shard]
+      gateway.log.debug('Recover', `Starting recover for ${_shard.id}`)
       gateway.workerConnector.sendToQueue({
         t: 'LAVALINK_RECOVER',
         d: {
@@ -46,6 +44,7 @@ async function run () {
       })
     })
   })
+
   gateway.bot.on('shardReady', event => {
     gateway.bot.shardStatusUpdate(event.id, {status: 'online', game: {name: `Shard: ${event.id} || ==help`, type: 0}})
     gateway.log.info('Gateway', 'Shard: ' + event.id + ' joined the hive')
@@ -68,7 +67,6 @@ async function run () {
         }
       })
     }
-
     gateway.workerConnector.sendToQueue(event)
     switch (event.t) {
       case 'VOICE_SERVER_UPDATE':
@@ -81,5 +79,4 @@ async function run () {
     }
   })
 }
-
 run().catch(error => console.log(error))

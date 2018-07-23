@@ -13,8 +13,6 @@ const gateway = new GhostGateway({
   statsHost: process.env.STATS_HOST,
   statsPort: process.env.STATS_PORT,
   statsPrefix: process.env.STATS_PREFIX,
-  gwHost: '127.0.0.1',
-  gwPort: 7001,
   firstShard: 0,
   lastShard: 0,
   numShards: 2,
@@ -36,6 +34,7 @@ async function run () {
     let shards = gateway.bot.shardManager.shards
     Object.keys(shards).forEach(function (shard) {
       let _shard = shards[shard]
+      gateway.log.debug('Recover', `Starting recover for ${_shard.id}`)
       gateway.workerConnector.sendToQueue({
         t: 'LAVALINK_RECOVER',
         d: {

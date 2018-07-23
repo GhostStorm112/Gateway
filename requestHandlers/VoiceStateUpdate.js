@@ -9,16 +9,15 @@ class VoiceStateUpdate extends RequestHandler {
   }
 
   async handle (event) {
-    console.log(event)
+    this.log.debug('H-VSU', `VSU for ${event.guild_id} `)
     const queue = await this.lavalink.queues.get(event.guild_id)
     await queue.player.join(event.channel_id)
-    queue.player.on('error', console.error)
-    queue.player.on('event', d => console.log(d))
 
     const players = await this.cache.storage.get('players', { type: 'arr' })
     let index
     if (Array.isArray(players)) index = players.findIndex(player => player.guild_id === event.guild_id)
     if (((!players && !index) || index < 0) && event.channel_id) {
+      this.log.debug('H-VSU', `Adding player ${event.guild_id} `)
       await this.cache.storage.upsert('players', [{ guild_id: event.guild_id, channel_id: event.channel_id }])
     } else if (players && typeof index !== 'undefined' && index >= 0 && !event.channel_id) {
       players.splice(index, 1)

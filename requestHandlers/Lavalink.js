@@ -10,7 +10,7 @@ class Lavalink extends RequestHandler {
   }
 
   async handle (event) {
-    console.log(event)
+    this.log.debug('H-LAVALINK', `Action: ${event.acion} running for ${event.guild_id}`)
     const queue = await this.lavalink.queues.get(event.guild_id)
     switch (event.action) {
       case 'RECOVER':

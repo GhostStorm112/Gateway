@@ -6,7 +6,9 @@
  */
 class RequestHandler {
   constructor (handler) {
+    Object.defineProperty(this, 'log', { value: handler.log })
     Object.defineProperty(this, 'bot', { value: handler.bot })
+
     Object.defineProperty(this, 'lavalink', { value: handler.lavalink })
     Object.defineProperty(this, 'cache', { value: handler.cache })
   }
