@@ -14,11 +14,13 @@ const gateway = new GhostGateway({
   statsPort: process.env.STATS_PORT,
   statsPrefix: process.env.STATS_PREFIX,
   firstShard: 0,
-  lastShard: 0,
+  lastShard: 1,
   numShards: 2,
   eventPath: path.join(__dirname, './requestHandlers/')
 })
 async function run () {
+  gateway.log.mode = 1
+
   gateway.log.info('Gateway', 'Starting gateway')
 
   await gateway.initialize()
@@ -31,23 +33,19 @@ async function run () {
     /* setInterval(() => {
       channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify({t: 'dblu'})))
     }, 1800000) */
-    let shards = gateway.bot.shardManager.shards
-    Object.keys(shards).forEach(function (shard) {
-      let _shard = shards[shard]
-      gateway.log.debug('Recover', `Starting recover for ${_shard.id}`)
-      gateway.workerConnector.sendToQueue({
-        t: 'LAVALINK_RECOVER',
-        d: {
-          shard_amount: 2,
-          shard: _shard.id
-        }
-      })
-    })
   })
 
   gateway.bot.on('shardReady', event => {
     gateway.bot.shardStatusUpdate(event.id, {status: 'online', game: {name: `Shard: ${event.id} || ==help`, type: 0}})
     gateway.log.info('Gateway', 'Shard: ' + event.id + ' joined the hive')
+    gateway.log.info('Gateway', `Starting recover for ${event.id}`)
+    gateway.workerConnector.sendToQueue({
+      t: 'LAVALINK_RECOVER',
+      d: {
+        shard_amount: 2,
+        shard: event.id
+      }
+    })
   })
 
   gateway.bot.on('disconnected', () => { gateway.log.info('Gateway', 'All shards disconnected succesfully') })
