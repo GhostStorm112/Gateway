@@ -14,14 +14,11 @@ class Lavalink extends RequestHandler {
     const queue = await this.lavalink.queues.get(event.guild_id)
     switch (event.action) {
       case 'RECOVER':
-        // this.bot.voiceStateUpdate(event.shard_id, event)
         queue.start()
         break
       case 'PLAY':
         await queue.add(event.song)
         if (!queue.player.playing && !queue.player.paused) {
-          // this.bot.voiceStateUpdate(event.shard_id, event)
-
           await queue.start()
         }
         break
@@ -39,12 +36,6 @@ class Lavalink extends RequestHandler {
         break
       case 'LEAVE':
         await queue.stop()
-        this.bot.voiceStateUpdate(event.shard_id, {
-          guild_id: event.guild_id,
-          channel_id: null,
-          self_mute: false,
-          self_deaf: false
-        })
         break
     }
   }
