@@ -29,10 +29,6 @@ async function run () {
 
   gateway.bot.on('ready', async () => {
     gateway.log.info('Gateway', 'Connected to Discord gateway')
-    // sgateway.lavalink.recover(2)
-    /* setInterval(() => {
-      channel.sendToQueue('weather-pre-cache', Buffer.from(JSON.stringify({t: 'dblu'})))
-    }, 1800000) */
   })
 
   gateway.bot.on('shardReady', event => {
