@@ -1,6 +1,6 @@
 require('bluebird')
 require('dotenv').config()
-const GhostGateway = require('../libs/ghost-gateway')
+const GhostGateway = require('ghost-gateway')
 const path = require('path')
 const gateway = new GhostGateway({
   amqpUrl: process.env.AMQP_URL,
