@@ -14,8 +14,8 @@ const gateway = new GhostGateway({
   statsPort: process.env.STATS_PORT,
   statsPrefix: process.env.STATS_PREFIX,
   firstShard: 0,
-  lastShard: 0,
-  numShards: 1,
+  lastShard: 1,
+  numShards: 2,
   eventPath: path.join(__dirname, './requestHandlers/')
 })
 async function run () {
@@ -29,6 +29,15 @@ async function run () {
 
   gateway.bot.on('ready', async () => {
     gateway.log.info('Gateway', 'Connected to Discord gateway')
+    setInterval(
+      async function shardsUpdate () {
+        let shards = []
+        for (let shard in gateway.bot.shardManager.shards) {
+          shards[shard] = { shard_id: gateway.bot.shardManager.shards[shard].id, shard_status: gateway.bot.shardManager.shards[shard].connector.status, shard_event: gateway.bot.shardManager.shards[shard].connector.seq }
+        }
+        await gateway.cache.storage.set('shards', shards)
+      }
+      , 5000)
   })
 
   gateway.bot.on('shardReady', event => {
