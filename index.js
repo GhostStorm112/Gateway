@@ -14,8 +14,8 @@ const gateway = new GhostGateway({
   statsPort: process.env.STATS_PORT,
   statsPrefix: process.env.STATS_PREFIX,
   firstShard: 0,
-  lastShard: 1,
-  numShards: 2,
+  lastShard: 0,
+  numShards: 1,
   eventPath: path.join(__dirname, './requestHandlers/')
 })
 async function run () {

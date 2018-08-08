@@ -10,6 +10,7 @@ class VoiceStateUpdate extends RequestHandler {
 
   async handle (event) {
     this.log.debug('H-VSU', `VSU for ${event.guild_id} `)
+    this.bot.voiceStateUpdate(event.shard_id, event)
     const queue = await this.lavalink.queues.get(event.guild_id)
     await queue.player.join(event.channel_id)
 
@@ -25,7 +26,6 @@ class VoiceStateUpdate extends RequestHandler {
       else await this.cache.storage.set('players', players)
       queue.player.removeAllListeners()
     }
-    this.bot.voiceStateUpdate(event.shard_id, event)
   }
 }
 
