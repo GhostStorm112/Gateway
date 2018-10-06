@@ -79,7 +79,7 @@ async function run () {
         break
     }
     if (event.t !== 'PRESENCE_UPDATE') {
-      gateway.log.debug('EVENT', event.t)
+      gateway.log.debug(`EVENT-${event.shard_id}`, event.t)
       gateway.workerConnector.sendToQueue(event)
     }
   })
