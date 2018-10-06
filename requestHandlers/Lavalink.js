@@ -12,13 +12,16 @@ class Lavalink extends RequestHandler {
   async handle (event) {
     this.log.debug('H-LAVALINK', `Action: ${event.action} running for ${event.guild_id}`)
     const queue = await this.lavalink.queues.get(event.guild_id)
+    console.log(queue.player.paused)
+    console.log(queue.player.playing)
     switch (event.action) {
       case 'RECOVER':
         queue.start()
         break
       case 'PLAY':
         await queue.add(event.song)
-        if (!queue.player.playing && !queue.player.paused) {
+
+        if (queue.player.playing === false && queue.player.paused === false) {
           await queue.start()
         }
         break
@@ -32,10 +35,11 @@ class Lavalink extends RequestHandler {
         await queue.next()
         break
       case 'RESUME':
-        await queue.player.pause(false)
-        break
-      case 'LEAVE':
-        await queue.stop()
+        if (queue.player.playing) {
+          await queue.start()
+        } else {
+          await queue.player.pause(false)
+        }
         break
     }
   }

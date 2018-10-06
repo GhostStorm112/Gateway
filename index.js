@@ -1,6 +1,6 @@
 require('bluebird')
 require('dotenv').config()
-const GhostGateway = require('ghost-gateway')
+const GhostGateway = require('../libs/ghost-gateway')
 const path = require('path')
 const gateway = new GhostGateway({
   amqpUrl: process.env.AMQP_URL,
@@ -33,6 +33,7 @@ async function run () {
       async function shardsUpdate () {
         let shards = []
         for (let shard in gateway.bot.shardManager.shards) {
+          // console.log({ shard_id: gateway.bot.shardManager.shards[shard].id, shard_status: gateway.bot.shardManager.shards[shard].connector.status, shard_event: gateway.bot.shardManager.shards[shard].connector.seq })
           shards[shard] = { shard_id: gateway.bot.shardManager.shards[shard].id, shard_status: gateway.bot.shardManager.shards[shard].connector.status, shard_event: gateway.bot.shardManager.shards[shard].connector.seq }
         }
         await gateway.cache.storage.set('shards', shards)
