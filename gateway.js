@@ -31,8 +31,8 @@ async function run () {
     gateway.log.info('Gateway', 'Connected to Discord gateway')
     setInterval(
       async function shardsUpdate () {
-        let shards = []
-        for (let shard in gateway.bot.shardManager.shards) {
+        const shards = []
+        for (const shard in gateway.bot.shardManager.shards) {
           // console.log({ shard_id: gateway.bot.shardManager.shards[shard].id, shard_status: gateway.bot.shardManager.shards[shard].connector.status, shard_event: gateway.bot.shardManager.shards[shard].connector.seq })
           shards[shard] = { shard_id: gateway.bot.shardManager.shards[shard].id, shard_status: gateway.bot.shardManager.shards[shard].connector.status, shard_event: gateway.bot.shardManager.shards[shard].connector.seq }
         }
@@ -42,7 +42,7 @@ async function run () {
   })
 
   gateway.bot.on('shardReady', event => {
-    gateway.bot.shardStatusUpdate(event.id, {status: 'online', game: {name: `Shard: ${event.id} || ==help`, type: 0}})
+    gateway.bot.shardStatusUpdate(event.id, { status: 'online', game: { name: `Shard: ${event.id} || ==help`, type: 0 } })
     gateway.log.info('Gateway', 'Shard: ' + event.id + ' joined the hive')
     gateway.log.debug('Gateway', `Starting recover for ${event.id}`)
     gateway.workerConnector.sendToQueue({
