@@ -1,6 +1,6 @@
 require('bluebird')
 require('dotenv').config()
-const GhostGateway = require('ghost-gateway')
+const GhostGateway = require('../libs/ghost-gateway')
 const path = require('path')
 const gateway = new GhostGateway({
   amqpUrl: process.env.AMQP_URL,
@@ -13,9 +13,9 @@ const gateway = new GhostGateway({
   statsHost: process.env.STATS_HOST,
   statsPort: process.env.STATS_PORT,
   statsPrefix: process.env.STATS_PREFIX,
-  firstShard: 3,
-  lastShard: 5,
-  numShards: 6,
+  firstShard: 0,
+  lastShard: 0,
+  numShards: 2,
   eventPath: path.join(__dirname, './requestHandlers/')
 })
 async function run () {
@@ -31,14 +31,12 @@ async function run () {
     gateway.log.info('Gateway', 'Connected to Discord gateway')
     setInterval(
       async function shardsUpdate () {
-        console.time('shard')
-
         let shards = []
         for (let shard in gateway.bot.shardManager.shards) {
+          // console.log({ shard_id: gateway.bot.shardManager.shards[shard].id, shard_status: gateway.bot.shardManager.shards[shard].connector.status, shard_event: gateway.bot.shardManager.shards[shard].connector.seq })
           shards[shard] = { shard_id: gateway.bot.shardManager.shards[shard].id, shard_status: gateway.bot.shardManager.shards[shard].connector.status, shard_event: gateway.bot.shardManager.shards[shard].connector.seq }
         }
         await gateway.cache.storage.set('shards', shards)
-        console.timeEnd('shard')
       }
       , 5000)
   })
@@ -81,7 +79,7 @@ async function run () {
         break
     }
     if (event.t !== 'PRESENCE_UPDATE') {
-      gateway.log.debug('EVENT', event.t)
+      gateway.log.debug(`EVENT-${event.shard_id}`, event.t)
       gateway.workerConnector.sendToQueue(event)
     }
   })
