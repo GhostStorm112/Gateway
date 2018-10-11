@@ -69,6 +69,8 @@ async function run () {
         }
       })
     }
+    if (event.author.bot || event.author.id === process.env.BOT_ID) { return }
+
     switch (event.t) {
       case 'VOICE_SERVER_UPDATE':
         gateway.lavalink.voiceServerUpdate(event.d)

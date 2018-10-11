@@ -56,6 +56,7 @@ gateway.bot.on('shardReady', event => {
 gateway.bot.on('disconnected', () => { gateway.log.info('Gateway', 'All shards disconnected succesfully') })
 
 gateway.bot.on('event', event => {
+  if(event.d.author){ if (event.d.author.bot || event.d.author.id === process.env.BOT_ID) { return }}
   gateway.stats.increment('discordevent', 1, 1, [`shard:${event.shard_id}`, `event:${event.t}`], (error) => {
     if (error) {
       this.client.log.error('Gateway-event', error)
