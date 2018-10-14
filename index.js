@@ -14,8 +14,8 @@ const gateway = new GhostGateway({
   statsPort: process.env.STATS_PORT,
   statsPrefix: process.env.STATS_PREFIX,
   firstShard: 0,
-  lastShard: 1,
-  numShards: 2,
+  lastShard: 0,
+  numShards: 1,
   eventPath: path.join(__dirname, './requestHandlers/')
 })
 gateway.log.mode = 1
@@ -25,9 +25,47 @@ gateway.log.info('Gateway', 'Starting gateway')
 gateway.initialize()
 gateway.on('error', error => gateway.log.error('ERROR', error))
 gateway.bot.on('error', error => gateway.log.error('ERROR', error))
-
+/* const object = { d:
+  { guild_id: '268807882059939840',
+    attachments: [],
+    author:
+     { avatar: 'f37ad54f3bd57c5848be2c14945c281a',
+       discriminator: '3460',
+       id: '167927608191746048',
+       username: '112' },
+    channel_id: '268807882059939840',
+    content: '==test',
+    edited_timestamp: null,
+    embeds: [],
+    id: '500220744777596930',
+    member:
+     { deaf: false,
+       joined_at: '2017-01-11T18:26:33.296000+00:00',
+       mute: false,
+       nick: null,
+       roles: [Array] },
+    mention_everyone: false,
+    mention_roles: [],
+    mentions: [],
+    nonce: '500220744119091200',
+    pinned: false,
+    timestamp: '2018-10-12T08:18:39.207000+00:00',
+    tts: false,
+    type: 0 },
+op: 0,
+s: 6,
+t: 'MESSAGE_CREATE',
+shard_id: 0 } */
 gateway.bot.on('ready', () => {
   gateway.log.info('Gateway', 'Connected to Discord gateway')
+  /*   let count = 0
+  setInterval(async () => {
+    console.log(`Sending number ${count}`)
+    object.d['nonce'] = count
+
+    gateway.workerConnector.sendToQueue(object)
+    count++
+  }, 20) */
   setInterval(
     async () => {
       const shards = []
