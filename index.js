@@ -1,6 +1,6 @@
 require('bluebird')
 require('dotenv').config()
-const GhostGateway = require('ghost-gateway')
+const GhostGateway = require('../ghost-gateway')
 const path = require('path')
 const gateway = new GhostGateway({
   amqpUrl: process.env.AMQP_URL,
@@ -20,8 +20,7 @@ const gateway = new GhostGateway({
 })
 gateway.log.mode = 1
 
-gateway.log.info('Gateway', 'Starting gateway')
-
+gateway.log.info('Gateway', `Starting gateway ${gateway.id}`)
 gateway.initialize()
 gateway.on('error', error => gateway.log.error('ERROR', error))
 gateway.bot.on('error', error => gateway.log.error('ERROR', error))
@@ -86,6 +85,7 @@ gateway.bot.on('shardReady', event => {
     t: 'LAVALINK_RECOVER',
     d: {
       shard_amount: 2,
+      gateway: gateway.id,
       shard: event.id
     }
   })
@@ -119,6 +119,8 @@ gateway.bot.on('event', event => {
   if (event.t !== 'PRESENCE_UPDATE') {
     gateway.log.debug(`EVENT-${event.shard_id}`, event.t)
     if (event.d) { event.d['type'] = event.t }
+    if (event.d) { event.d['gateway'] = gateway.id }
+
     gateway.workerConnector.sendToQueue(event)
   }
 })
