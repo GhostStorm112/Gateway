@@ -118,6 +118,7 @@ gateway.bot.on('event', event => {
   }
   if (event.t !== 'PRESENCE_UPDATE') {
     gateway.log.debug(`EVENT-${event.shard_id}`, event.t)
+    if (event.d) { event.d['type'] = event.t }
     gateway.workerConnector.sendToQueue(event)
   }
 })
