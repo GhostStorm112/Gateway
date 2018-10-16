@@ -15,9 +15,7 @@ class Lavalink extends RequestHandler {
 
     switch (event.action) {
       case 'RECOVER':
-        if (queue.player.playing === false && queue.player.paused === false) {
-          queue.start()
-        }
+        queue.start()
         break
       case 'PLAY':
         queue.add(event.song)
