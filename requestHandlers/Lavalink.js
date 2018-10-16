@@ -22,7 +22,6 @@ class Lavalink extends RequestHandler {
         break
       case 'PLAY':
         queue.add(event.song)
-        queue.start()
         if (queue.player.playing === false && queue.player.paused === false) {
           this.log.debug('PLAY', 'Running start')
           queue.start()
@@ -38,7 +37,7 @@ class Lavalink extends RequestHandler {
         queue.next()
         break
       case 'RESUME':
-        if (queue.player.playing) {
+        if (!queue.player.playing) {
           queue.start()
         } else {
           queue.player.pause(false)
