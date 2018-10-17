@@ -1,28 +1,30 @@
 {
-	"name": "ghost-gateway",
-	"version": "1.0.0-0",
-	"description": "GhostStorm Gateway",
-	"main": "index.js",
-	"repository": "",
-	"author": "_112",
-	"license": "MIT",
-	"scripts": {
-		"test": "eslint ."
-	},
-	"dependencies": {
-		"Cloudstorm": "DasWolke/CloudStorm#dev",
-		"bluebird": "^3.5.2",
-		"ghost-core": "https://gitlab.com/GhostStorm/Core.git#f9804abd",
-		"ghost-gateway": "https://gitlab.com/GhostStorm/ghost-gateway.git#b785b031"
-	},
-	"devDependencies": {
-		"dotenv": "^6.1.0",
-		"eslint": "^5.7.0",
-		"eslint-config-node": "^4.0.0",
-		"eslint-config-standard": "^12.0.0",
-		"eslint-plugin-import": "^2.14.0",
-		"eslint-plugin-node": "^7.0.1",
-		"eslint-plugin-promise": "^4.0.1",
-		"eslint-plugin-standard": "^4.0.0"
-	}
+  "name": "ghost-gateway",
+  "version": "v1.0.0-0",
+  "description": "GhostStorm Gateway",
+  "main": "index.js",
+  "repository": "",
+  "author": "_112",
+  "license": "MIT",
+  "scripts": {
+    "test": "eslint ."
+  },
+  "dependencies": {
+    "Cloudstorm": "DasWolke/CloudStorm#dev",
+    "bluebird": "^3.5.2",
+    "ghost-core": "https://gitlab.com/GhostStorm/Core.git#f9804abd",
+    "ghost-gateway": "https://gitlab.com/GhostStorm/ghost-gateway.git#b785b031"
+  },
+  "devDependencies": {
+    "auto-bump": "^0.0.10",
+    "dotenv": "^6.1.0",
+    "eslint": "^5.7.0",
+    "eslint-config-node": "^4.0.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0"
+  },
+  "autoBump": {}
 }
