@@ -12,8 +12,8 @@
   "dependencies": {
     "Cloudstorm": "DasWolke/CloudStorm#dev",
     "bluebird": "^3.5.2",
-    "ghost-core": "https://gitlab.com/GhostStorm/Core.git#f9804abd",
-    "ghost-gateway": "https://gitlab.com/GhostStorm/ghost-gateway.git#b785b031"
+    "ghost-core": "https://gitlab.com/GhostStorm/Core.git",
+    "ghost-gateway": "https://gitlab.com/GhostStorm/ghost-gateway.git"
   },
   "devDependencies": {
     "auto-bump": "^0.0.10",
