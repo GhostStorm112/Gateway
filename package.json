@@ -13,7 +13,7 @@
 		"Cloudstorm": "DasWolke/CloudStorm#dev",
 		"bluebird": "^3.5.2",
 		"ghost-core": "https://gitlab.com/GhostStorm/Core.git#f9804abd",
-		"ghost-gateway": "https://gitlab.com/GhostStorm/ghost-gateway.git#e80903c1"
+		"ghost-gateway": "https://gitlab.com/GhostStorm/ghost-gateway.git#b785b031"
 	},
 	"devDependencies": {
 		"dotenv": "^6.1.0",
