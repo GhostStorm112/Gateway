@@ -4,7 +4,7 @@ LABEL maintainer "_112"
 COPY ./ /app
 # Add package.json for Yarn
 #COPY package.json yarn.lock ./
-CMD yarn test
+CMD npm test
 WORKDIR /app
 #  Install dependencies
 RUN apk add --update \
@@ -12,7 +12,7 @@ RUN apk add --update \
 && apk add --no-cache --virtual .build-deps git python g++ make \
 \
 # Install node.js dependencies
-&& yarn install \
+&& npm install \
 \
 # Clean up build dependencies
 && apk del .build-deps
