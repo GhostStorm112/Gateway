@@ -2,6 +2,8 @@ require('bluebird')
 require('dotenv').config()
 const GhostGateway = require('ghost-gateway')
 const path = require('path')
+const git = require('git-rev-sync')
+const info = require('./package.json')
 const gateway = new GhostGateway({
   amqpUrl: process.env.AMQP_URL,
   redisUrl: process.env.REDIS_URL,
@@ -19,6 +21,19 @@ const gateway = new GhostGateway({
   eventPath: path.join(__dirname, './requestHandlers/')
 })
 gateway.log.mode = 1
+
+gateway.log.info('Gateway', `
+   _____ _    _  ____   _____ _______
+  / ____| |  | |/ __ \\ / ____|__   __|
+ | |  __| |__| | |  | | (___    | |
+ | | |_ |  __  | |  | |\\___ \\   | |
+ | |__| | |  | | |__| |____) |  | |
+  \\_____|_|  |_|\\____/|_____/   |_|
+    
+    Version: ${info.version} By: ${info.author}
+
+    Commit ID: ${git.short()} Branch: ${git.branch()}
+  `)
 
 gateway.log.info('Gateway', `Starting gateway ${gateway.id}`)
 gateway.initialize()
