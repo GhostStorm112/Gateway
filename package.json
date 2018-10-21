@@ -1,6 +1,6 @@
 {
   "name": "ghost-gateway",
-  "version": "v1.0.0-0",
+  "version": "0.5.0",
   "description": "GhostStorm Gateway",
   "main": "index.js",
   "repository": "",
