@@ -20,7 +20,6 @@ class Lavalink extends RequestHandler {
           queue.start()          
         }
         this.log.debug('RECOVER', 'Queue paused')
-
         break
       case 'PLAY':
         queue.add(event.song)
