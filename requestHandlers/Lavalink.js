@@ -39,7 +39,6 @@ class Lavalink extends RequestHandler {
         break
       case 'RESUME':
         queue.player.pause(false)
-
         break
     }
   }
