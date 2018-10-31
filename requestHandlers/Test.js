@@ -2,14 +2,15 @@ const RequestHandler = require('../structures/RequestHandler')
 
 class StatusUpdate extends RequestHandler {
   get name () {
-    return 'Discord'
+    return 'Event reload'
   }
 
   get canHandle () {
-    return ['TEST']
+    return ['EVENT_RELOAD']
   }
 
   async handle (event) {
+    this.log.info('RELOAD', 'Reloading event')
   }
 }
 

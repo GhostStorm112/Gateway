@@ -22,27 +22,24 @@ class Lavalink extends RequestHandler {
         this.log.debug('RECOVER', 'Queue paused')
         break
       case 'PLAY':
-        queue.add(event.song)
-        if (queue.player.playing === false) {
-          this.log.debug('PLAY', 'Running start')
-          queue.start()
+        await queue.add(event.track)
+        if(queue.player.playing === false && queue.player.paused === false) {
+          await queue.start()
         }
+        this.log.debug('PLAY', 'Running start')
         break
       case 'STOP':
         queue.stop()
         break
       case 'PAUSE':
-        queue.player.pause()
+        queue.player.pause(true)
         break
       case 'SKIP':
         queue.next()
         break
       case 'RESUME':
-        if (!queue.player.playing) {
-          queue.start()
-        } else {
-          queue.player.pause(false)
-        }
+        queue.player.pause(false)
+
         break
     }
   }
