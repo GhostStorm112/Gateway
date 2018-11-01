@@ -59,7 +59,7 @@ gateway.bot.on('shardReady', event => {
   gateway.workerConnector.sendToQueue({
     t: 'LAVALINK_RECOVER',
     d: {
-      shard_amount: 2,
+      shard_amount: 1,
       gateway: gateway.id,
       shard: event.id
     }
@@ -78,18 +78,22 @@ gateway.bot.on('event', event => {
       gateway.cache.actions.voiceStates.upsert(event.d)
       gateway.lavalink.voiceStateUpdate(event.d)
       break
-  }
-  if (event.t !== 'PRESENCE_UPDATE') {
-    gateway.stats.increment('discordevent', 1, 1, [`shard:${event.shard_id}`, `event:${event.t}`], (error) => {
-      if (error) {
-        this.client.log.error('Gateway-event', error)
+    case 'PRESENCE_UPDATE':
+      break
+    case 'TYPING_START':
+      break
+    default:
+      if (event.d) { 
+        event.d['type'] = event.t 
+        event.d['gateway'] = gateway.id
       }
-    })
-    gateway.log.debug(`EVENT-${event.shard_id}`, event.t)
-    if (event.d) { 
-      event.d['type'] = event.t 
-      event.d['gateway'] = gateway.id
-    }
-    gateway.workerConnector.sendToQueue(event)
+      gateway.stats.increment('discordevent', 1, 1, [`shard:${event.shard_id}`, `event:${event.t}`], (error) => {
+        if (error) {
+          this.client.log.error('Gateway-event', error)
+        }
+      })
+      gateway.log.debug(`EVENT-${event.shard_id}`, event.t)
+      gateway.workerConnector.sendToQueue(event)
+      break
   }
 })
