@@ -1,6 +1,6 @@
 require('bluebird')
 require('dotenv').config()
-const GhostGateway = require('ghost-gateway')
+const GhostGateway = require('../ghost-gateway')
 const path = require('path')
 const git = require('git-rev-sync')
 const info = require('./package.json')

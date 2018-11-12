@@ -10,6 +10,14 @@ class ReadyEventHandler extends EventHandler {
 
   async handle (event) {
     this.log.info('Gateway', 'Connected to Discord gateway')
+    this.workerConnector.sendToQueue({
+      t: 'LAVALINK_RECOVER',
+      d: {
+        shard_amount: 1,
+        gateway: this.gateway.id,
+        shard: event.id
+      }
+    })
     setInterval(
       async () => {
         const shards = []

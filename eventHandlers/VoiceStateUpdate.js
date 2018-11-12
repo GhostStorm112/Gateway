@@ -14,6 +14,7 @@ class VoiceStateUpdate extends EventHandler {
     this.lavalink.voiceStateUpdate(event.d)
     if (event.d) { 
       event.d['gateway'] = this.gateway.id
+      event.d['t'] = event.t
     }
     this.workerConnector.sendToQueue(event)
   }

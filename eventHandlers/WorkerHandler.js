@@ -17,6 +17,7 @@ class WorkerHandler extends EventHandler {
 
     if (event.d) { 
       event.d['gateway'] = this.gateway.id
+      event.d['t'] = event.t
     }
     this.workerConnector.sendToQueue(event)
   }

@@ -12,7 +12,6 @@ class VoiceStateUpdate extends RequestHandler {
     this.log.debug('R-VSU', `VSU for guild ${event.guild_id} `)
     this.bot.voiceStateUpdate(event.shard_id, event)
     const queue = await this.lavalink.queues.get(event.guild_id)
-    // await queue.player.join(event.channel_id)
 
     const players = await this.cache.storage.get('players', { type: 'arr' })
     let index
