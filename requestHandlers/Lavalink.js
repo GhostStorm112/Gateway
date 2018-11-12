@@ -10,14 +10,14 @@ class Lavalink extends RequestHandler {
   }
 
   async handle (event) {
-    this.log.debug('H-LAVALINK', `Action: ${event.action} running for ${event.guild_id}`)
+    this.log.debug('R-LAVALINK', `Action: ${event.action} running for ${event.guild_id}`)
     const queue = await this.lavalink.queues.get(event.guild_id)
 
     switch (event.action) {
       case 'RECOVER':
         if (queue.player.paused === false) {
           this.log.debug('RECOVER', 'Running start')
-          queue.start()          
+          queue.start()
         }
         this.log.debug('RECOVER', 'Queue paused')
         break

@@ -1,15 +1,15 @@
 const RequestHandler = require('../structures/RequestHandler')
 class VoiceStateUpdate extends RequestHandler {
   get name () {
-    return 'VoiceStateUpdate'
+    return 'WVoiceStateUpdate'
   }
 
   get canHandle () {
-    return ['VOICE_STATE_UPDATE']
+    return ['W_VOICE_STATE_UPDATE']
   }
-
+  
   async handle (event) {
-    this.log.debug('H-VSU', `VSU for guild ${event.guild_id} `)
+    this.log.debug('R-VSU', `VSU for guild ${event.guild_id} `)
     this.bot.voiceStateUpdate(event.shard_id, event)
     const queue = await this.lavalink.queues.get(event.guild_id)
     // await queue.player.join(event.channel_id)
