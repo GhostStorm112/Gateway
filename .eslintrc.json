@@ -11,6 +11,7 @@
     "curly": "error",
     "no-var": "error",
     "prefer-const": "error",
-    "callback-return": "error"
+    "callback-return": "error",
+    "no-console": "warn"
   }
 }
