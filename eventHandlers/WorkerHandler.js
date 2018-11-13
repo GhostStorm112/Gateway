@@ -14,7 +14,6 @@ class WorkerHandler extends EventHandler {
 
   async handle (event) {
     this.log.debug(`E-${event.shard_id}`, event.t)
-
     if (event.d) { 
       event.d['gateway'] = this.gateway.id
       event.d['t'] = event.t
