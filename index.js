@@ -1,6 +1,6 @@
 require('bluebird')
 require('dotenv').config()
-const GhostGateway = require('../ghost-gateway')
+const GhostGateway = require('ghost-gateway')
 const path = require('path')
 const git = require('git-rev-sync')
 const info = require('./package.json')
@@ -16,7 +16,7 @@ const gateway = new GhostGateway({
   statsPort: process.env.STATS_PORT,
   statsPrefix: process.env.STATS_PREFIX,
   firstShard: 0,
-  lastShard: 1,
+  lastShard: 0,
   numShards: 2,
   eventPath: path.join(__dirname, './eventHandlers/'),
   requestPath: path.join(__dirname, './requestHandlers/')
