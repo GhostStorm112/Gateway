@@ -21,7 +21,7 @@ class ReadyEventHandler extends EventHandler {
       }
       , 5000)
 
-    setInterval(
+    /* setInterval(
       async () => {
         this.workerConnector.sendToQueue({ d:
           { guild_id: '268807882059939840',
@@ -61,6 +61,7 @@ class ReadyEventHandler extends EventHandler {
         )
       }, 100
     ) 
+  } */
   }
 }
 
